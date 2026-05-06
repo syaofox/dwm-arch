@@ -1,0 +1,20 @@
+@import "theme.rasi"
+
+configuration{
+    modi: ["drun", "window", "run"];
+    show-icons: true;
+    terminal: "kitty";
+    drun-display-format: "{icon} {name}";
+    icon-color: "@foreground";
+    location: 0;
+    disable-history: false;
+    sidebar-mode: false;
+    display-drun: " ";
+    display-run: " ";
+    display-window: " ";
+    font: "JetBrainsMono Nerd Font Mono 10";
+}
+
+/* --- 引入外部主题 --- */
+
+@theme "theme"

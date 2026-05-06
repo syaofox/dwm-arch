@@ -1,0 +1,87 @@
+! TokyoNight Theme Colors for dwm
+
+#define BLACK           #404768
+#define RED             #f7768e
+#define GREEN           #9ece6a
+#define YELLOW          #e0af68
+#define BLUE            #7aa2f7
+#define MAGENTA         #bb9af7
+#define CYAN            #7dcfff
+#define WHITE           #c0caf5
+
+#define BG              #1a1b26
+#define FG              #e5e8f7
+#define BORDER          #25293a
+#define SEL_BG          #191a20
+
+#define WHITER          #FFFFFF
+#define MAGENTA_LIGHT   #af9afc
+#define MAGENTA_DARK    #8971b4
+
+#define GTK_THEME       Mint-Y-Purple
+#define GTK_ICON        Mint-Y-Purple
+#define GTK_FONT        Noto Sans 11
+#define DARK_THEME      0
+#define YAZI_DARK       tokyo-night
+#define YAZI_LIGHT      tokyo-night
+
+
+! dwm 窗口颜色 - 未选中，无客户端
+dwm.col_norm_fg:        BLACK
+dwm.col_norm_bg:        BG
+dwm.col_norm_border:    BORDER
+
+! dwm 窗口颜色 - 选中，无客户端
+dwm.col_sel_fg:         CYAN
+dwm.col_sel_bg:         SEL_BG
+dwm.col_sel_border:     MAGENTA
+
+! dwm 窗口颜色 - 未选中，有客户端
+dwm.col_occ_fg:         FG
+dwm.col_occ_bg:         BG
+dwm.col_occ_border:     BORDER
+
+! dwm 窗口颜色 - 选中，有客户端
+dwm.col_selocc_fg:      CYAN
+dwm.col_selocc_bg:      SEL_BG
+dwm.col_selocc_border:  MAGENTA
+
+! dwm 状态栏颜色（dwmbar）
+dwm.col_status_fg:      WHITE
+dwm.col_status_bg:      BG
+dwm.col_status_border:  BG
+
+! dwm 窗口标题区颜色（标题栏）
+dwm.col_title_fg:       FG
+dwm.col_title_bg:       BG
+dwm.col_title_border:   BLACK
+
+! dwm 窗口标题区颜色 - 选中状态
+dwm.col_titlesel_fg:    FG
+dwm.col_titlesel_bg:    BG
+dwm.col_titlesel_border: BG
+
+! dwm Tag 标签下划线颜色
+dwm.col_tagunderline:   MAGENTA_LIGHT
+dwm.tagunderline: 1
+
+! slstatus 状态栏颜色
+slstatus.sep:   BLACK
+slstatus.net:   WHITE
+slstatus.cpu:   GREEN
+slstatus.ram:   GREEN
+slstatus.temp:  GREEN
+slstatus.gpu:   YELLOW
+slstatus.kbd:   RED
+slstatus.swap:  BLUE
+slstatus.time:  CYAN
+
+! slock 锁屏颜色
+slock.init:     BG
+slock.input:    MAGENTA_DARK
+slock.fail:     RED
+slock.text:     WHITE
+
+! wallpick 配色
+wallpick.background: BG
+wallpick.borderSelected: MAGENTA
