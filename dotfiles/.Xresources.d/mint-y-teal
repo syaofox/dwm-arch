@@ -1,13 +1,13 @@
 ! Mint-Y-Teal Theme Colors for dwm
 
-#define BLACK           #0b1113
+#define BLACK           #5D6D72
 #define RED             #E74C3C
 #define GREEN           #2ECC71
 #define YELLOW          #E7B448
-#define BLUE            #25bdce
+#define BLUE            #25acce
 #define MAGENTA         #1A8693
 #define CYAN            #25bdce
-#define WHITE           #FFFFFF
+#define WHITE           #eeeff0
 
 #define BG              #162124
 #define FG              #E4E4E4
@@ -16,7 +16,7 @@
 
 #define WHITER          #FFFFFF
 #define MAGENTA_LIGHT   #23acbb
-#define MAGENTA_DARK    #1eb9ca
+#define MAGENTA_DARK    #1a8593
 
 #define GTK_THEME       Mint-Y-Teal
 #define GTK_ICON        Mint-Y-Teal
@@ -69,13 +69,13 @@ dwm.tagunderline: 0
 ! slstatus 状态栏颜色
 slstatus.sep:   BLACK
 slstatus.net:   WHITE
-slstatus.cpu:   WHITE
-slstatus.ram:   WHITE
-slstatus.gpu:   WHITE
-slstatus.temp:  WHITE
+slstatus.cpu:   GREEN
+slstatus.ram:   GREEN
+slstatus.temp:  GREEN
+slstatus.gpu:   BLUE
 slstatus.kbd:   RED
-slstatus.swap:  WHITE
-slstatus.time:  WHITE
+slstatus.swap:  YELLOW
+slstatus.time:  CYAN
 
 ! slock 锁屏颜色
 slock.init:     BG
