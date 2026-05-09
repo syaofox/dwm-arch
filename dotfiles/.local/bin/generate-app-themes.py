@@ -13,7 +13,7 @@ TEMPLATE_OUTPUTS = [
     ('gtk3.ini.j2',           '~/.config/gtk-3.0/settings.ini'),
     ('gtk3.ini.j2',           '~/.config/gtk-4.0/settings.ini'),
     ('xsettingsd.conf.j2',    '~/.config/xsettingsd/xsettingsd.conf'),
-    ('kitty.conf.j2',         '~/.config/kitty/kitty.conf'),
+    ('kitty.conf.j2',         '~/.config/kitty/theme.conf'),
     ('fcitx5.conf.j2',        '~/.local/share/fcitx5/themes/dwm/theme.conf'),
     ('fcitx5-dark.conf.j2',   '~/.local/share/fcitx5/themes/dwm-dark/theme.conf'),
     ('nvim.lua.j2',            '~/.config/nvim/theme.lua'),
