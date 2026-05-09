@@ -27,8 +27,8 @@ desc = "Go to ~/tmp"
 
 [[mgr.prepend_keymap]]
 on   = [ "g", "p" ]
-run  = "cd ~/project"
-desc = "Go to ~/project"
+run  = "cd ~/Projects"
+desc = "Go to ~/Projects"
 
 [[mgr.prepend_keymap]]
 on   = [ "g", "m" ]

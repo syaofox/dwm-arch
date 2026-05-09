@@ -6,7 +6,7 @@ log_step "Creating common directories..."
 
 user_dirs=(
     "$HOME/tmp"
-    "$HOME/project"
+    "$HOME/Projects"
 )
 
 mnt_dirs=(
