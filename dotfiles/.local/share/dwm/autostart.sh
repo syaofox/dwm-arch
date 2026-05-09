@@ -37,8 +37,12 @@ else
 fi
 
 
-log "Starting picom..."
-picom --config "$HOME/.config/picom/picom.conf" -b &
+if pgrep -x picom >/dev/null 2>&1; then
+    log "picom already running, skipping"
+else
+    log "Starting picom..."
+    picom --config "$HOME/.config/picom/picom.conf" -b &
+fi
 
 if command -v xwallpaper >/dev/null; then
     WALLPAPER_CONF="$HOME/.config/wallpaper.conf"
