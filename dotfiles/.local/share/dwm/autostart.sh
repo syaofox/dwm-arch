@@ -22,7 +22,7 @@ fi
 
 for svc in xsettingsd dunst slstatus nm-applet blueman-applet pasystray xfce4-clipman; do
     log "Starting $svc..."
-    $svc &
+    $svc  >/dev/null 2>&1 &
 done
 
 log "Starting fcitx5..."
