@@ -1,6 +1,6 @@
 ! Mint-Y-Teal Theme Colors for dwm
 
-#define BLACK           #5D6D72
+#define BLACK           #0b1113
 #define RED             #E74C3C
 #define GREEN           #2ECC71
 #define YELLOW          #E7B448
@@ -15,8 +15,8 @@
 #define SEL_BG          #1A8693
 
 #define WHITER          #FFFFFF
-#define MAGENTA_LIGHT   #FFFFFF
-#define MAGENTA_DARK    #d8f4f7
+#define MAGENTA_LIGHT   #23acbb
+#define MAGENTA_DARK    #1eb9ca
 
 #define GTK_THEME       Mint-Y-Teal
 #define GTK_ICON        Mint-Y-Teal
