@@ -5,14 +5,14 @@ err() { echo "[$(date +'%H:%M:%S')] ERROR: $*" >&2; }
 LOGDIR="/tmp/dwm"
 LOGFILE="$LOGDIR/dwm.log"
 mkdir -p "$LOGDIR"
-[ -f "$LOGFILE" ] && [ "$(stat -c%s "$LOGFILE")" -gt 1048576 ] && mv "$LOGFILE" "$LOGFILE.old"
 exec > >(tee -a "$LOGFILE") 2>&1
 log "=== DWM session starting (PID: $$) ==="
 
 command -v dbus-update-activation-environment >/dev/null &&
     dbus-update-activation-environment --systemd --all
 
-/usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 >/dev/null 2>&1 &
+pgrep -f "polkit-gnome-authentication" >/dev/null 2>&1 ||
+    /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 >/dev/null 2>&1 &
 
 if command -v numlockx >/dev/null 2>&1; then
     numlockx on &
@@ -21,12 +21,20 @@ else
 fi
 
 for svc in xsettingsd dunst slstatus pasystray nm-applet blueman-applet xfce4-clipman; do
-    log "Starting $svc..."
-    $svc  >/dev/null 2>&1 &
+    if pgrep -x "$svc" >/dev/null 2>&1; then
+        log "$svc already running, skipping"
+    else
+        log "Starting $svc..."
+        $svc >/dev/null 2>&1 &
+    fi
 done
 
-log "Starting fcitx5..."
-fcitx5 -d &
+if pgrep -x fcitx5 >/dev/null 2>&1; then
+    log "fcitx5 already running, skipping"
+else
+    log "Starting fcitx5..."
+    fcitx5 -d &
+fi
 
 
 log "Starting picom..."
