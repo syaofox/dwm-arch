@@ -25,7 +25,7 @@
 #define YAZI_DARK       catppuccin-mocha
 #define YAZI_LIGHT      catppuccin-latte
 #define NVIM_THEME      catppuccin
-#define CATPPUCCIN_FLAVOR mocha
+#define NVIM_PRE_SETUP  require("catppuccin").setup({flavour="mocha"})
 
 
 ! dwm 窗口颜色 - 未选中，无客户端
