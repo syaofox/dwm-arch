@@ -20,7 +20,7 @@ else
     log "numlockx not installed, skipping"
 fi
 
-for svc in xsettingsd dunst slstatus nm-applet blueman-applet pasystray xfce4-clipman; do
+for svc in xsettingsd dunst slstatus pasystray nm-applet blueman-applet xfce4-clipman; do
     log "Starting $svc..."
     $svc  >/dev/null 2>&1 &
 done
@@ -30,7 +30,7 @@ fcitx5 -d &
 
 
 log "Starting picom..."
-# picom --config "$HOME/.config/picom/picom.conf" -b &
+picom --config "$HOME/.config/picom/picom.conf" -b &
 
 if command -v xwallpaper >/dev/null; then
     WALLPAPER_CONF="$HOME/.config/wallpaper.conf"
