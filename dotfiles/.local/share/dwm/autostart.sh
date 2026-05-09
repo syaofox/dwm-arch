@@ -20,11 +20,7 @@ else
     log "numlockx not installed, skipping"
 fi
 
-
-log "Starting pasystray..."
-pasystray >/dev/null 2>&1 &
-
-for svc in xsettingsd dunst slstatus nm-applet blueman-applet xfce4-clipman; do
+for svc in xsettingsd dunst slstatus nm-applet blueman-applet pasystray xfce4-clipman; do
     log "Starting $svc..."
     $svc &
 done

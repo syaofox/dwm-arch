@@ -25,6 +25,7 @@ PACMAN_packages=(
     zenity
     maim
     calcurse
+    pasystray
 
     # 终端工具
     fzf fd ripgrep zoxide bat thefuck trash-cli
