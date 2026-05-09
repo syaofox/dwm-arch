@@ -1,7 +1,7 @@
 ! dwm Original Classic Colors
 
-#define BLACK           #696969
-#define RED             #444444
+#define BLACK           #444444
+#define RED             #696969
 #define GREEN           #bbbbbb
 #define YELLOW          #eeeeee
 #define BLUE            #005577
@@ -15,7 +15,7 @@
 #define SEL_BG          #005577
 
 #define WHITER          #ffffff
-#define MAGENTA_LIGHT   #eeeeee
+#define MAGENTA_LIGHT   #31c3fd
 #define MAGENTA_DARK    #005577
 
 #define GTK_THEME       Mint-Y-Blue
@@ -24,7 +24,7 @@
 #define DARK_THEME      1
 #define YAZI_DARK       modus
 #define YAZI_LIGHT      modus
-#define NVIM_THEME      gruvbox-material
+#define NVIM_THEME      onedark
 
 
 ! dwm 窗口颜色 - 未选中，无客户端
