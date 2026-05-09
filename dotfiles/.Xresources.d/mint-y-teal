@@ -24,6 +24,7 @@
 #define DARK_THEME      0
 #define YAZI_DARK       flexoki-dark
 #define YAZI_LIGHT      flexoki-light
+#define NVIM_THEME      everforest
 
 
 ! dwm 窗口颜色 - 未选中，无客户端

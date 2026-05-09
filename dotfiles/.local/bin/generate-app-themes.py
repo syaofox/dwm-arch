@@ -16,6 +16,7 @@ TEMPLATE_OUTPUTS = [
     ('kitty.conf.j2',         '~/.config/kitty/kitty.conf'),
     ('fcitx5.conf.j2',        '~/.local/share/fcitx5/themes/dwm/theme.conf'),
     ('fcitx5-dark.conf.j2',   '~/.local/share/fcitx5/themes/dwm-dark/theme.conf'),
+    ('nvim.lua.j2',            '~/.config/nvim/theme.lua'),
 ]
 
 

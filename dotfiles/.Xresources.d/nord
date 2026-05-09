@@ -24,6 +24,7 @@
 #define DARK_THEME      0
 #define YAZI_DARK       nord
 #define YAZI_LIGHT      nord
+#define NVIM_THEME      nord
 
 
 ! dwm 窗口颜色 - 未选中，无客户端

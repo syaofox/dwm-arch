@@ -24,6 +24,8 @@
 #define DARK_THEME      1
 #define YAZI_DARK       catppuccin-mocha
 #define YAZI_LIGHT      catppuccin-latte
+#define NVIM_THEME      catppuccin
+#define CATPPUCCIN_FLAVOR mocha
 
 
 ! dwm 窗口颜色 - 未选中，无客户端

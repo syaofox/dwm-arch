@@ -24,6 +24,7 @@
 #define DARK_THEME      1
 #define YAZI_DARK       modus
 #define YAZI_LIGHT      modus
+#define NVIM_THEME      gruvbox-material
 
 
 ! dwm 窗口颜色 - 未选中，无客户端

@@ -14,6 +14,8 @@ return {
     "shaunsingh/nord.nvim",
     "nyoom-engineering/oxocarbon.nvim",
     "catppuccin/nvim",
+    "sainnhe/gruvbox-material",
+    "sainnhe/everforest",
     "nvim-lualine/lualine.nvim",
     "brenoprata10/nvim-highlight-colors",
     "nvim-orgmode/orgmode",
