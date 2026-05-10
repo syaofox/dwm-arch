@@ -8,28 +8,40 @@ mkdir -p "$LOGDIR"
 exec > >(tee -a "$LOGFILE") 2>&1
 log "=== DWM session starting (PID: $$) ==="
 
+# 检查是否已经运行，避免重复启动导致的报错
+if [ -z "$GNOME_KEYRING_CONTROL" ]; then
+    # 使用 eval 捕获输出，并将错误输出重定向到 /dev/null 防止阻塞或报错影响启动
+    eval "$(gnome-keyring-daemon --start --components=pkcs11,secrets,ssh 2>/dev/null)"
+fi
+
+export SSH_AUTH_SOCK
+export GNOME_KEYRING_CONTROL
+
+
 command -v dbus-update-activation-environment >/dev/null &&
     dbus-update-activation-environment --systemd --all
 
-pgrep -f "polkit-gnome-authentication" >/dev/null 2>&1 ||
-    /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 >/dev/null 2>&1 &
+pgrep -f "polkit-gnome-authentication" >/dev/null ||
+    /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 >/dev/null &
 
-if command -v numlockx >/dev/null 2>&1; then
+
+if command -v numlockx >/dev/null; then
     numlockx on &
 else
     log "numlockx not installed, skipping"
 fi
 
-for svc in xsettingsd dunst slstatus pasystray nm-applet blueman-applet xfce4-clipman; do
-    if pgrep -x "$svc" >/dev/null 2>&1; then
+# blueman-applet
+for svc in xsettingsd dunst slstatus pasystray nm-applet xfce4-clipman; do
+    if pgrep -x "$svc" >/dev/null; then
         log "$svc already running, skipping"
     else
         log "Starting $svc..."
-        $svc >/dev/null 2>&1 &
+        $svc >/dev/null &
     fi
 done
 
-if pgrep -x fcitx5 >/dev/null 2>&1; then
+if pgrep -x fcitx5 >/dev/null; then
     log "fcitx5 already running, skipping"
 else
     log "Starting fcitx5..."
@@ -37,12 +49,12 @@ else
 fi
 
 
-# if pgrep -x picom >/dev/null 2>&1; then
-#     log "picom already running, skipping"
-# else
-#     log "Starting picom..."
-#     picom --config "$HOME/.config/picom/picom.conf" -b &
-# fi
+if pgrep -x picom >/dev/null 2>&1; then
+    log "picom already running, skipping"
+else
+    log "Starting picom..."
+    picom --config "$HOME/.config/picom/picom.conf" -b &
+fi
 
 if command -v xwallpaper >/dev/null; then
     WALLPAPER_CONF="$HOME/.config/wallpaper.conf"
