@@ -12,7 +12,7 @@ command -v dbus-update-activation-environment >/dev/null &&
     dbus-update-activation-environment --systemd --all
 
 pgrep -f "polkit-gnome-authentication" >/dev/null 2>&1 ||
-    /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 >/dev/null 2>&1 &
+    /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 >/dev/null 2>&1 &
 
 if command -v numlockx >/dev/null 2>&1; then
     numlockx on &
@@ -37,12 +37,12 @@ else
 fi
 
 
-if pgrep -x picom >/dev/null 2>&1; then
-    log "picom already running, skipping"
-else
-    log "Starting picom..."
-    picom --config "$HOME/.config/picom/picom.conf" -b &
-fi
+# if pgrep -x picom >/dev/null 2>&1; then
+#     log "picom already running, skipping"
+# else
+#     log "Starting picom..."
+#     picom --config "$HOME/.config/picom/picom.conf" -b &
+# fi
 
 if command -v xwallpaper >/dev/null; then
     WALLPAPER_CONF="$HOME/.config/wallpaper.conf"
