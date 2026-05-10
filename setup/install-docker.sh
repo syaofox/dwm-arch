@@ -27,5 +27,16 @@ if ! sudo usermod -aG docker "$USER"; then
     exit 1
 fi
 
+if lspci | grep -qi 'nvidia'; then
+    log_step "NVIDIA GPU detected, installing nvidia-container-toolkit..."
+    if ! sudo pacman -S --needed --noconfirm nvidia-container-toolkit; then
+        log_error "Failed to install nvidia-container-toolkit"
+        exit 1
+    fi
+    log_info "Restarting docker service..."
+    sudo systemctl restart docker
+    log_info "nvidia-container-toolkit installed"
+fi
+
 log_info "docker installation complete, please log out and log back in to apply group changes"
 exit 0
