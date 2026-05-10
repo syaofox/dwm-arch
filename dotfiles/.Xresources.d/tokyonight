@@ -86,3 +86,11 @@ slock.text:     WHITE
 ! wallpick 配色
 wallpick.background: BG
 wallpick.borderSelected: MAGENTA
+
+! sysmenu 配色
+sysmenu.background: BG
+sysmenu.foreground: FG
+sysmenu.backgroundSelected: MAGENTA
+sysmenu.foregroundSelected: WHITER
+sysmenu.backgroundHover: BORDER
+sysmenu.countdown: 5
