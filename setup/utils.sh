@@ -17,6 +17,7 @@ compile_and_install() {
     local name="$1"
     local repo_url="$2"
     local build_dir="$3"
+    local branch="${4:-}"
 
     log_info "Compiling and installing ${name}..."
 
@@ -24,15 +25,33 @@ compile_and_install() {
         if [[ -d "$build_dir/.git" ]]; then
             log_info "Directory exists, updating repository..."
             cd "$build_dir" || return 1
-            git pull || return 1
+            if [[ -n "$branch" ]]; then
+                git fetch origin --tags
+                if git rev-parse --verify "origin/$branch" >/dev/null 2>&1; then
+                    git checkout -B "$branch" "origin/$branch"
+                else
+                    git checkout "$branch"
+                fi
+                git pull || return 1
+            else
+                git pull || return 1
+            fi
         else
             log_info "Directory exists but not a git repository, re-cloning..."
             rm -rf "$build_dir"
-            git clone "$repo_url" "$build_dir" || return 1
+            if [[ -n "$branch" ]]; then
+                git clone -b "$branch" "$repo_url" "$build_dir" || return 1
+            else
+                git clone "$repo_url" "$build_dir" || return 1
+            fi
             cd "$build_dir" || return 1
         fi
     else
-        git clone "$repo_url" "$build_dir" || return 1
+        if [[ -n "$branch" ]]; then
+            git clone -b "$branch" "$repo_url" "$build_dir" || return 1
+        else
+            git clone "$repo_url" "$build_dir" || return 1
+        fi
         cd "$build_dir" || return 1
     fi
 
