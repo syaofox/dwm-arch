@@ -65,7 +65,7 @@ dwm.col_titlesel_border: BG
 ! dwm Tag 标签下划线颜色
 dwm.col_tagunderline:   MAGENTA_LIGHT
 dwm.tagunderline: 1
-dwm.enabletagicons: 1
+dwm.tagicons: 1
 
 ! slstatus 状态栏颜色
 slstatus.sep:   BLACK
