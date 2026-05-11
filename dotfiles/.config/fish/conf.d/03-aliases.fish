@@ -5,6 +5,7 @@ if status is-interactive
     alias trash='trash-put -v'
     alias comfyup='cd /mnt/github/comfyui-docker; touch ./custom_nodes/.update; docker compose restart; cd -'
     alias lzd='lazydocker'
+    alias lzg='lazygit'
     alias dcp='docker compose'
     alias myip='curl -s ifconfig.me'
     alias port='sudo ss -tulnp | grep'

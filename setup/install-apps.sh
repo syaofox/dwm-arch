@@ -33,6 +33,7 @@ PACMAN_packages=(
     # 开发工具
     nodejs npm
     uv
+    lazygit
 
     # 备份
     timeshift
