@@ -64,3 +64,6 @@ vim.keymap.set("n", "<leader>mm", "<cmd>make<CR>")
 vim.keymap.set("n", "<leader><leader>", function()
     vim.cmd("so")
 end)
+
+-- lazygit
+vim.keymap.set("n", "<leader>lzg", "<cmd>LazyGit<cr>")

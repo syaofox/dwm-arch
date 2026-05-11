@@ -24,4 +24,5 @@ return {
     "ojroques/vim-oscyank",
     "kkoomen/vim-doge",
     "captbaritone/better-indent-support-for-php-with-html",
+    "kdheepak/lazygit.nvim",
 }
