@@ -41,4 +41,14 @@ if [ ! -f "$HOME/.config/theme" ] && [ -f "$HOME/.local/bin/generate-app-themes.
     python3 "$HOME/.local/bin/generate-app-themes.py" "$HOME/.Xresources.d/${THEME}"
 fi
 
+# 检查是否已经运行，避免重复启动导致的报错
+if [ -z "$GNOME_KEYRING_CONTROL" ]; then
+    # 使用 eval 捕获输出，并将错误输出重定向到 /dev/null 防止阻塞或报错影响启动
+    eval "$(gnome-keyring-daemon --start --components=pkcs11,secrets,ssh 2>/dev/null)"
+fi
+
+export SSH_AUTH_SOCK
+export GNOME_KEYRING_CONTROL
+
+
 exec dwm
