@@ -4,46 +4,43 @@
 
 fzf_args=(
   --multi
-  --preview 'yay -Siia {1}'
+  --preview 'bash -c "if [[ {1} = aur ]]; then yay -Siia {2}; else yay -Si {2}; fi"'
   --preview-label='alt-p: toggle description, alt-b/B: toggle PKGBUILD, alt-j/k: scroll, tab: multi-select'
   --preview-label-pos='bottom'
   --preview-window 'down:65%:wrap'
+  --nth=2
   --bind 'alt-p:toggle-preview'
   --bind 'alt-d:preview-half-page-down,alt-u:preview-half-page-up'
   --bind 'alt-k:preview-up,alt-j:preview-down'
-  --bind 'alt-b:change-preview:yay -Gpa {1} | tail -n +5'
-  --bind 'alt-B:change-preview:yay -Siia {1}'
+  --bind 'alt-b:change-preview:bash -c "if [[ {1} = aur ]]; then yay -Gpa {2} | tail -n +5; else echo PKGBUILD only available for AUR packages; fi"'
+  --bind 'alt-B:change-preview:bash -c "if [[ {1} = aur ]]; then yay -Siia {2}; else yay -Si {2}; fi"'
   --color 'pointer:green,marker:green'
 )
 
-pkg_names=$(yay -Slq | fzf "${fzf_args[@]}")
+pkg_info=$(yay -Sl | fzf "${fzf_args[@]}")
 
-if [[ -n $pkg_names ]]; then
-  # 打印选中的包名列表
+if [[ -n $pkg_info ]]; then
+  mapfile -t pkgs_array <<< "$(echo "$pkg_info" | awk '{print $2}')"
+
   echo -e "\n\033[1;34mPreparing to install the following AUR packages:\033[0m"
   echo "-----------------------------------"
   i=1
-  # 使用 mapfile 将换行符分隔的字符串转换为数组
-  mapfile -t pkgs_array <<< "$pkg_names"
-  
   for pkg in "${pkgs_array[@]}"; do
     printf "%2d. \033[1;32m%s\033[0m\n" $((i++)) "$pkg"
   done
   echo "-----------------------------------"
-  
-  # 确认提示
+
   read -p "Do you want to proceed with the installation? [Y/n] " -n 1 -r
   echo
-  
+
   if [[ ! $REPLY =~ ^[Nn]$ ]]; then
     echo -e "\n\033[1;33mInstalling AUR packages, please wait...\033[0m\n"
-    
-    # 批量安装，添加 aur/ 前缀
+
     aur_pkgs=()
     for pkg in "${pkgs_array[@]}"; do
       aur_pkgs+=("aur/$pkg")
     done
-    
+
     yay -S --noconfirm "${aur_pkgs[@]}"
     
     # 检查退出码
