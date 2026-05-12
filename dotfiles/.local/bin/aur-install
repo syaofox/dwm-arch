@@ -20,7 +20,7 @@ fzf_args=(
 pkg_info=$(yay -Sl | fzf "${fzf_args[@]}")
 
 if [[ -n $pkg_info ]]; then
-  mapfile -t pkgs_array <<< "$(echo "$pkg_info" | awk '{print $2}')"
+  mapfile -t pkgs_array <<< "$(echo "$pkg_info" | awk '{print $1"/"$2}')"
 
   echo -e "\n\033[1;34mPreparing to install the following AUR packages:\033[0m"
   echo "-----------------------------------"
@@ -36,12 +36,7 @@ if [[ -n $pkg_info ]]; then
   if [[ ! $REPLY =~ ^[Nn]$ ]]; then
     echo -e "\n\033[1;33mInstalling AUR packages, please wait...\033[0m\n"
 
-    aur_pkgs=()
-    for pkg in "${pkgs_array[@]}"; do
-      aur_pkgs+=("aur/$pkg")
-    done
-
-    yay -S --noconfirm "${aur_pkgs[@]}"
+    yay -S --noconfirm "${pkgs_array[@]}"
     
     # 检查退出码
     if [ $? -eq 0 ]; then
