@@ -31,6 +31,9 @@ if ! sudo pacman -S --needed --noconfirm "${PACMAN_packages[@]}"; then
     exit 1
 fi
 
+log_info "Ensuring libvirt secrets directory exists..."
+sudo mkdir -p /var/lib/libvirt/secrets
+
 log_info "Starting and enabling libvirtd service..."
 sudo systemctl enable --now libvirtd
 
