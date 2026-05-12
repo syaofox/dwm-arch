@@ -48,6 +48,7 @@ PACMAN_packages=(
 
     # 其他
     jq
+    gnome-keyring
 )
 
 log_info "Installing official packages..."
