@@ -10,6 +10,7 @@ export GLFW_IM_MODULE=ibus
 export __GLX_VENDOR_LIBRARY_NAME=nvidia
 export QT_QPA_PLATFORMTHEME=qt5ct
 export XDG_DATA_DIRS="${XDG_DATA_DIRS:-/usr/local/share:/usr/share}:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share"
+export DOCKER_BUILDKIT=1
 
 
 # X基础设置
