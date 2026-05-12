@@ -7,6 +7,7 @@ log_step "Installing docker..."
 PACMAN_packages=(
     docker
     docker-compose
+    docker-buildx
     lazydocker 
 )
 
