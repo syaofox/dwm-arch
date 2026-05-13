@@ -27,6 +27,13 @@
 #define GTK_ERROR_BG     #f2b8b5
 #define GTK_ERROR_FG     #601410
 
+#define GTK_WIN_BG_LIGHT       #d8dee9
+#define GTK_WIN_FG_LIGHT       #2e3440
+#define GTK_SURFACE_BG_LIGHT   #c2ccdc
+#define GTK_SURFACE_FG_LIGHT   #2e3440
+#define GTK_ACCENT_BG_LIGHT    #b48ead
+#define GTK_ACCENT_FG_LIGHT    #2e3440
+
 #define GTK_THEME       Mint-Y-Teal
 #define GTK_ICON        Mint-Y-Teal
 #define GTK_FONT        Noto Sans 11

@@ -13,9 +13,7 @@ TEMPLATE_OUTPUTS = [
     ('gtk3.ini.j2',           '~/.config/gtk-3.0/settings.ini'),
     ('gtk3.ini.j2',           '~/.config/gtk-4.0/settings.ini'),
     ('gtk.css.j2',            '~/.config/gtk-3.0/gtk.css'),
-    ('gtk.css.j2',            '~/.config/gtk-3.0/gtk-dark.css'),
     ('gtk.css.j2',            '~/.config/gtk-4.0/gtk.css'),
-    ('gtk.css.j2',            '~/.config/gtk-4.0/gtk-dark.css'),
     ('xsettingsd.conf.j2',    '~/.config/xsettingsd/xsettingsd.conf'),
     ('kitty.conf.j2',         '~/.config/kitty/theme.conf'),
     ('fcitx5.conf.j2',        '~/.local/share/fcitx5/themes/dwm/theme.conf'),
@@ -91,7 +89,20 @@ def main():
 
     palette = parse_palette(theme_file)
 
+    # GTK3 doesn't load user gtk-dark.css reliably.
+    # Pick the correct variant based on DARK_THEME flag:
+    #   DARK_THEME=0 (prefer light) → gtk.css.j2 (light colors)
+    #   DARK_THEME=1 (prefer dark)  → gtk-dark.css.j2 (dark colors)
+    dark_theme = palette.get('DARK_THEME', '0')
+    gtk_variant = 'gtk-dark.css.j2' if dark_theme == '1' else 'gtk.css.j2'
+
     for tpl_name, rel_output in TEMPLATE_OUTPUTS:
+        # Override gtk.css template based on dark/light preference
+        if rel_output.endswith('/gtk.css'):
+            tpl_name = gtk_variant
+        elif rel_output.endswith('/gtk-dark.css'):
+            continue  # skip gtk-dark.css entirely
+
         tpl_path = os.path.join(TEMPLATES_DIR, tpl_name)
         if not os.path.isfile(tpl_path):
             continue
