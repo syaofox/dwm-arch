@@ -12,6 +12,8 @@ TEMPLATE_OUTPUTS = [
     ('gtk2.j2',               '~/.gtkrc-2.0'),
     ('gtk3.ini.j2',           '~/.config/gtk-3.0/settings.ini'),
     ('gtk3.ini.j2',           '~/.config/gtk-4.0/settings.ini'),
+    ('gtk.css.j2',            '~/.config/gtk-3.0/gtk.css'),
+    ('gtk.css.j2',            '~/.config/gtk-4.0/gtk.css'),
     ('xsettingsd.conf.j2',    '~/.config/xsettingsd/xsettingsd.conf'),
     ('kitty.conf.j2',         '~/.config/kitty/theme.conf'),
     ('fcitx5.conf.j2',        '~/.local/share/fcitx5/themes/dwm/theme.conf'),

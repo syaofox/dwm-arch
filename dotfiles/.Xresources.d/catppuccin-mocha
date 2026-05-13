@@ -18,6 +18,15 @@
 #define MAGENTA_LIGHT   #cba6f7
 #define MAGENTA_DARK    #af669c
 
+#define GTK_WIN_BG       #1e1e2e
+#define GTK_WIN_FG       #cdd6f4
+#define GTK_SURFACE_BG   #313244
+#define GTK_SURFACE_FG   #cdd6f4
+#define GTK_ACCENT_BG    #cba6f7
+#define GTK_ACCENT_FG    #1e1e2e
+#define GTK_ERROR_BG     #f2b8b5
+#define GTK_ERROR_FG     #601410
+
 #define GTK_THEME       Mint-Y-Pink
 #define GTK_ICON        Mint-Y-Pink
 #define GTK_FONT        Noto Sans 11
