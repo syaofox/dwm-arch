@@ -70,8 +70,7 @@ export GNOME_KEYRING_CONTROL
 
 # ================== 7. 其他会话级服务 ==================
 # PolicyKit 认证代理（用于 GUI 授权弹窗）
-[ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] && \
-    /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
-
+[ -x /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 ] && \
+    /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
 exec dwm
