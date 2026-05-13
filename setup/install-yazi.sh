@@ -15,4 +15,5 @@ ya pkg add KKV9/compress
 ya pkg add yazi-rs/plugins:chmod
 
 log_info "yazi installation complete"
+ya pkg upgrade
 exit 0
