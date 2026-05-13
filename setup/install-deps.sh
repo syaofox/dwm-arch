@@ -41,6 +41,7 @@ PACMAN_packages=(
 
     # 桌面门户
     qt5ct
+    qt6ct
     xdg-desktop-portal xdg-desktop-portal-gtk
 
     # 归档
