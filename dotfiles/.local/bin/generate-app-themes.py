@@ -16,6 +16,8 @@ TEMPLATE_OUTPUTS = [
     ('gtk.css.j2',            '~/.config/gtk-4.0/gtk.css'),
     ('qt5ct-colors.conf.j2',  '~/.config/qt5ct/colors/dwm.conf'),
     ('qt5ct-colors.conf.j2',  '~/.config/qt6ct/colors/dwm.conf'),
+    ('qt5ct.conf.j2',         '~/.config/qt5ct/qt5ct.conf'),
+    ('qt6ct.conf.j2',         '~/.config/qt6ct/qt6ct.conf'),
     ('xsettingsd.conf.j2',    '~/.config/xsettingsd/xsettingsd.conf'),
     ('kitty.conf.j2',         '~/.config/kitty/theme.conf'),
     ('fcitx5.conf.j2',        '~/.local/share/fcitx5/themes/dwm/theme.conf'),
@@ -103,6 +105,8 @@ def main():
         sys.exit(1)
 
     palette = parse_palette(theme_file)
+    palette['QT5CT_COLOR_DIR'] = os.path.expanduser('~/.config/qt5ct/colors')
+    palette['QT6CT_COLOR_DIR'] = os.path.expanduser('~/.config/qt6ct/colors')
 
     # Pick the correct variant based on DARK_THEME flag:
     #   DARK_THEME=0 (prefer light) → *-light variant (no suffix)
