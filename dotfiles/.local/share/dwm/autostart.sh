@@ -9,14 +9,6 @@ exec > >(tee -a "$LOGFILE") 2>&1
 log "=== DWM session starting (PID: $$) ==="
 
 
-
-command -v dbus-update-activation-environment >/dev/null &&
-    dbus-update-activation-environment --systemd --all
-
-pgrep -f "polkit-gnome-authentication" >/dev/null ||
-    /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 >/dev/null &
-
-
 if command -v numlockx >/dev/null; then
     numlockx on &
 else

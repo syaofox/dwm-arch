@@ -1,7 +1,20 @@
 #!/bin/bash
+
+# ================== 加载用户环境 ==================
+# 确保 startx 能读取到 .profile 中的环境变量（如 PATH）
+[ -f "$HOME/.profile" ] && . "$HOME/.profile"
+
+
 # 环境变量
 export XDG_CURRENT_DESKTOP=dwm
 export XDG_SESSION_DESKTOP=dwm
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+mkdir -p "$XDG_RUNTIME_DIR" && chmod 700 "$XDG_RUNTIME_DIR"
+
+
 export GTK_IM_MODULE=fcitx
 export QT_IM_MODULE=fcitx
 export XMODIFIERS=@im=fcitx
@@ -41,14 +54,24 @@ if [ ! -f "$HOME/.config/theme" ] && [ -f "$HOME/.local/bin/generate-app-themes.
     python3 "$HOME/.local/bin/generate-app-themes.py" "$HOME/.Xresources.d/${THEME}"
 fi
 
-# 检查是否已经运行，避免重复启动导致的报错
-if [ -z "$GNOME_KEYRING_CONTROL" ]; then
-    # 使用 eval 捕获输出，并将错误输出重定向到 /dev/null 防止阻塞或报错影响启动
-    eval "$(gnome-keyring-daemon --start --components=pkcs11,secrets,ssh 2>/dev/null)"
+
+
+# ================== 5. 确保 D-Bus 会话已启动 ==================
+# 如果系统脚本没有启动，或你想确保唯一性，这里作为兜底
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    eval "$(dbus-launch --sh-syntax --exit-with-session)"
 fi
 
+# ================== 6. 启动 GNOME Keyring（直接启动） ==================
+# 不使用 PAM 自动解锁，守护进程需手动解锁或使用空密码
+eval "$(gnome-keyring-daemon --start --components=secrets,ssh)" &
 export SSH_AUTH_SOCK
 export GNOME_KEYRING_CONTROL
+
+# ================== 7. 其他会话级服务 ==================
+# PolicyKit 认证代理（用于 GUI 授权弹窗）
+[ -x /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 ] && \
+    /usr/lib/policykit-1-gnome/polkit-gnome-authentication-agent-1 &
 
 
 exec dwm
