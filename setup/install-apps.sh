@@ -21,7 +21,8 @@ PACMAN_packages=(
 
     # 桌面工具
     rofi
-    lxappearance
+    # lxappearance
+    nwg-look
     zenity
     maim
     calcurse
