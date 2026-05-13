@@ -36,8 +36,9 @@ PACMAN_packages=(
     uv
     lazygit
 
-    # 备份
+    # 其他
     timeshift
+    qalculate-gtk
 )
 
 log_info "Installing official packages..."
