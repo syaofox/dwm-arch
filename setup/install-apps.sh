@@ -39,6 +39,8 @@ PACMAN_packages=(
     # 其他
     timeshift
     qalculate-gtk
+
+    # vlc vlc-plugin-ffmpeg
 )
 
 log_info "Installing official packages..."
