@@ -10,6 +10,7 @@ set_wallpaper() {
     [[ ! -f "$wallpaper" ]] && { notify "File not found: $wallpaper"; return 1; }
     if xwallpaper --zoom "$wallpaper"; then
         echo "$wallpaper" > "$WALLPAPER_CONF"
+        sudo /usr/local/bin/sync-lightdm-greeter.sh 2>/dev/null || true
     else
         notify "Failed to set wallpaper"
         return 1

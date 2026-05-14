@@ -59,6 +59,10 @@ restart_xsettingsd() {
     fi
 }
 
+update_lightdm_greeter() {
+    sudo /usr/local/bin/sync-lightdm-greeter.sh 2>/dev/null || true
+}
+
 switch_theme() {
     local theme="$1"
     local theme_file
@@ -133,8 +137,8 @@ switch_theme() {
     # 启动 fcitx5 应用新主题
     fcitx5 -d &
 
-    # PS1 配置已通过 PROMPT_COMMAND 自动检测更新（见 env.sh）
-    # 下次显示提示符时会自动应用新主题
+    # 同步 LightDM greeter 主题
+    update_lightdm_greeter
 
     dunstify -r 9988 -t 2000 "主题已切换: $theme"
 }

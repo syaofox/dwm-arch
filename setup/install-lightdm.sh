@@ -39,5 +39,18 @@ if [[ -f "$SUDOERS_FILE" ]]; then
     log_info "Removed sudoers rule: $SUDOERS_FILE"
 fi
 
+log_info "Setting up NOPASSWD sudo rule for LightDM greeter sync..."
+SUDOERS_FILE="/etc/sudoers.d/sync-lightdm-greeter"
+if [[ ! -f "$SUDOERS_FILE" ]]; then
+    sudo tee "$SUDOERS_FILE" > /dev/null << EOF
+$CURRENT_USER ALL=(ALL) NOPASSWD: /usr/local/bin/sync-lightdm-greeter.sh
+EOF
+    sudo chmod 0440 "$SUDOERS_FILE"
+    log_info "Created: $SUDOERS_FILE"
+fi
+
+log_info "Generating initial LightDM greeter config..."
+sudo /usr/local/bin/sync-lightdm-greeter.sh 2>/dev/null || true
+
 log_info "LightDM installation complete!"
 log_info "After reboot, LightDM will start and you can log in to the dwm session."
