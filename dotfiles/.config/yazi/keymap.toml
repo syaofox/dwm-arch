@@ -40,6 +40,12 @@ on   = [ "g", "r" ]
 run  = "cd ~/.local/share/Trash/files"
 desc = "Go to trash"
 
+# mv-dir.yazi - Move selected files to new directory
+[[mgr.prepend_keymap]]
+on   = [ "c", "d" ]
+run  = "plugin mv-dir"
+desc = "Move selected files to new directory"
+
 # compress.yazi - Archive selected files
 [[mgr.prepend_keymap]]
 on   = [ "c", "a", "a" ]
