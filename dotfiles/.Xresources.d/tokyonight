@@ -36,6 +36,8 @@
 
 #define GTK_THEME       Mint-Y-Purple
 #define GTK_ICON        Mint-Y-Purple
+#define LIGHTDM_GTK_THEME       Mint-Y-Dark-Purple
+#define LIGHTDM_GTK_ICON        Mint-Y-Purple
 #define GTK_FONT        Noto Sans 11
 #define DARK_THEME      0
 #define YAZI_DARK       tokyo-night
