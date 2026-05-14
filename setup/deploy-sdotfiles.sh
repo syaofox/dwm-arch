@@ -32,7 +32,7 @@ sudo_backup_and_copy() {
         sudo mkdir -p "$target_dir"
     fi
 
-    sudo cp -f "$src" "$target"
+    sudo cp -fp "$src" "$target"
     log_info "Copied: $target"
 }
 
