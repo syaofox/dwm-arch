@@ -10,6 +10,10 @@ case "$mode" in
     yazi)
         exec kitty --class yazi-float -e bash -l -i -c 'exec yazi'
         ;;
+
+    lazydocker)
+        exec kitty --class lazydocker-float -e bash -l -i -c 'exec lazydocker'
+        ;;    
     file)
         nemo --no-desktop
         ;;
