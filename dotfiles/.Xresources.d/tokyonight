@@ -29,10 +29,10 @@
 
 #define GTK_WIN_BG_LIGHT       #f2f4fa
 #define GTK_WIN_FG_LIGHT       #1a1b26
-#define GTK_SURFACE_BG_LIGHT   #eceef8
+#define GTK_SURFACE_BG_LIGHT   #f2f4fa
 #define GTK_SURFACE_FG_LIGHT   #1a1b26
 #define GTK_ACCENT_BG_LIGHT    #bb9af7
-#define GTK_ACCENT_FG_LIGHT    #ffffff
+#define GTK_ACCENT_FG_LIGHT    #f2f4fa
 
 #define GTK_THEME       Mint-Y-Purple
 #define GTK_ICON        Mint-Y-Purple
