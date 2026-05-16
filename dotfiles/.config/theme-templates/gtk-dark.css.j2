@@ -136,6 +136,37 @@ paned, .paned {
   color: @window_fg_color;
 }
 
+/* Labels - ensure text inheritance */
+label {
+  color: @window_fg_color;
+}
+button label {
+  color: inherit;
+}
+
+/* Action bar and info bar */
+actionbar, .actionbar {
+  background-color: @card_bg_color;
+  color: @window_fg_color;
+  border-color: @borders;
+}
+infobar, .info {
+  background-color: @card_bg_color;
+  color: @window_fg_color;
+  border-color: @borders;
+}
+
+/* Places sidebar (Nemo specific) */
+placessidebar, .placessidebar {
+  background-color: @sidebar_bg_color;
+  color: @sidebar_fg_color;
+}
+
+/* Title buttons */
+.titlebutton {
+  color: @window_fg_color;
+}
+
 /* Button variants */
 button.suggested-action {
   background-color: @accent_bg_color;
