@@ -16,7 +16,7 @@ PACMAN_packages=(
     xsettingsd
     curl wget vim vi nano
     bash-completion
-    rsync udisks2
+    rsync udisks2 udiskie
     btrfs-progs
 
     # 通知、网络、认证

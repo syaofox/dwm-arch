@@ -20,6 +20,12 @@ run  = "plugin rsync-paste -m"
 desc = "Rsync paste (move, remove source)"
 
 # 常用目录
+
+[[mgr.prepend_keymap]]
+on   = [ "g", "r" ]
+run  = "cd /run/media/syaofox"
+desc = "Go to /run/media/syaofox"
+
 [[mgr.prepend_keymap]]
 on   = [ "g", "t" ]
 run  = "cd ~/tmp"

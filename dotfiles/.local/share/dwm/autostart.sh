@@ -16,7 +16,7 @@ else
 fi
 
 # blueman-applet
-for svc in xsettingsd dunst slstatus pasystray nm-applet xfce4-clipman; do
+for svc in xsettingsd dunst slstatus pasystray nm-applet xfce4-clipman udiskie; do
     if pgrep -x "$svc" >/dev/null; then
         log "$svc already running, skipping"
     else
@@ -31,6 +31,7 @@ else
     log "Starting fcitx5..."
     fcitx5 -d &
 fi
+
 
 
 if pgrep -x picom >/dev/null 2>&1; then

@@ -76,7 +76,6 @@ run_step "Deploy system configuration files" "./setup/deploy-sdotfiles.sh"
 run_step "Update user groups" "./setup/update-usergroup.sh"
 
 run_step "Install LightDM display manager" "./setup/install-lightdm.sh"
-# run_step "Configure TTY autologin (alternative to LightDM)" "./setup/configure-autologin.sh"
 
 
 
