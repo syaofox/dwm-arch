@@ -40,6 +40,8 @@ PACMAN_packages=(
     timeshift
     qalculate-gtk
 
+    uget aria2
+
     # vlc vlc-plugin-ffmpeg
 )
 
