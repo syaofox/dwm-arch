@@ -43,6 +43,7 @@ PACMAN_packages=(
     qt5ct
     qt6ct
     xdg-desktop-portal xdg-desktop-portal-gtk
+    gnome-themes-extra
 
     # 归档
     unzip 7zip
