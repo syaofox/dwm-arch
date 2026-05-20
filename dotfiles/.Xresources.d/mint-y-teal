@@ -26,6 +26,10 @@
 #define GTK_ACCENT_FG    #FFFFFF
 #define GTK_ERROR_BG     #f2b8b5
 #define GTK_ERROR_FG     #601410
+#define GTK_SUCCESS_BG   #2ECC71
+#define GTK_SUCCESS_FG   #162124
+#define GTK_WARNING_BG   #E7B448
+#define GTK_WARNING_FG   #162124
 
 #define GTK_WIN_BG_LIGHT       #E4E4E4
 #define GTK_WIN_FG_LIGHT       #162124
