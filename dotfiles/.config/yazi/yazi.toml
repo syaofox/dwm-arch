@@ -3,3 +3,22 @@ linemode       = "mtime"
 show_hidden    = true
 show_symlink   = true
 
+
+[plugin]
+  prepend_preloaders = [
+    # 使用 mediainfo 预加载音视频和图像
+    { mime = "{audio,video,image}/*", run = "mediainfo" },
+    { mime = "application/subrip", run = "mediainfo" }, # 支持字幕文件
+    { url = "*.{ai,eps,ait}", run = "mediainfo" },     # 支持 Adobe 设计文件
+  ]
+
+  prepend_previewers = [
+    # 使用 mediainfo 预览音视频和图像（这样右侧就会显示缩略图 + 参数）
+    { mime = "{audio,video,image}/*", run = "mediainfo" },
+    { mime = "application/subrip", run = "mediainfo" },
+    { url = "*.{ai,eps,ait}", run = "mediainfo" },
+  ]
+
+# 注意：如果要预览特别大的 Adobe 设计文件（如 AI/PSD），建议加大内存限制
+[tasks]
+  image_alloc = 1073741824        # 限制为 1024MB 内存分配

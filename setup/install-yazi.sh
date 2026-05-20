@@ -13,6 +13,7 @@ fi
 log_info "Installing compress.yazi plugin..."
 ya pkg add KKV9/compress
 ya pkg add yazi-rs/plugins:chmod
+ya pkg add boydaihungst/mediainfo
 
 log_info "yazi installation complete"
 ya pkg upgrade

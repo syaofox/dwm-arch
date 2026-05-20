@@ -51,6 +51,8 @@ PACMAN_packages=(
     # 其他
     jq
     gnome-keyring
+    mediainfo
+    ffmpeg imagemagick
 )
 
 log_info "Installing official packages..."
