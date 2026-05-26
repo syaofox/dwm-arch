@@ -1,0 +1,10 @@
+[Nemo Action]
+Name=Open in Yazi
+Name[zh_CN]=在 Yazi 中打开
+Comment=Open current directory in Yazi terminal file manager
+Comment[zh_CN]=用 Yazi 终端文件管理器打开当前目录
+Exec=yazi "%P"
+Icon-Name=terminal
+Terminal=true
+Selection=none
+Extensions=any;
