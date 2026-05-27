@@ -11,4 +11,6 @@ text/plain=code.desktop
 text/html=code.desktop
 text/markdown=code.desktop          
 text/x-shellscript=code.desktop     
+video/*=mpv.desktop
+audio/*=mpv.desktop
 
