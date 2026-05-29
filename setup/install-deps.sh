@@ -38,6 +38,8 @@ PACMAN_packages=(
     gvfs
     mtools smbclient cifs-utils nfs-utils
     fuse3
+    # mtp手机挂载
+    libmtp mtpfs gvfs-mtp
 
     # 桌面门户
     qt5ct
