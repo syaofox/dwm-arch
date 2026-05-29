@@ -8,6 +8,7 @@
 #define MAGENTA         #cba6f7
 #define CYAN            #89dceb
 #define WHITE           #bac2de
+#define COMMENT         #585b70
 
 #define BG              #1e1e2e
 #define FG              #cdd6f4
