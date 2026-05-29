@@ -1,5 +1,5 @@
 if status is-interactive
-    alias ls='ls --color=auto'
+    alias ls='command ls --color=auto'
     alias ll='ls -alhF --time-style="+%m-%d %H:%M:%S"'
     alias la='ls -A'
     alias trash='trash-put -v'

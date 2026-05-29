@@ -47,6 +47,9 @@ PACMAN_packages=(
     xdg-desktop-portal xdg-desktop-portal-gtk
     gnome-themes-extra
 
+    # 终端工具
+    eza
+
     # 归档
     unzip 7zip
 
