@@ -59,6 +59,7 @@ AUR_PACKAGES=(
     brave-origin-nightly-bin
     mint-y-icons
     mint-themes
+    cropgui
 )
 if command -v yay >/dev/null; then
     yay -S --needed --noconfirm "${AUR_PACKAGES[@]}" || log_warn "Some AUR packages failed to install"
