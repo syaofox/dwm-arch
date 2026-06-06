@@ -1,22 +1,44 @@
 #!/bin/bash
 # 复制选中文件/文件夹的名称到剪贴板（不包含路径）
 
-# 检查是否有参数
-if [ -z "$1" ]; then
-    exit 0
-fi
-
 # 收集所有文件名，每行一个
 NAMES=""
-for path in "$@"; do
-    # 只获取文件名（basename）
-    FILENAME=$(basename "$path")
-    if [ -n "$NAMES" ]; then
-        NAMES="$NAMES"$'\n'"$FILENAME"
-    else
-        NAMES="$FILENAME"
-    fi
-done
+
+# 优先使用 Nemo 脚本环境变量（Scripts 菜单方式更可靠）
+if [ -n "$NEMO_SCRIPT_SELECTED_FILE_PATHS" ]; then
+    RAW_PATHS="$NEMO_SCRIPT_SELECTED_FILE_PATHS"
+elif [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
+    RAW_PATHS="$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS"
+elif [ $# -gt 0 ]; then
+    RAW_PATHS=""
+    for path in "$@"; do
+        if [ -n "$RAW_PATHS" ]; then
+            RAW_PATHS="$RAW_PATHS"$'\n'"$path"
+        else
+            RAW_PATHS="$path"
+        fi
+    done
+fi
+
+# 处理路径（去除两端空白，跳过空行）
+if [ -n "$RAW_PATHS" ]; then
+    while IFS= read -r path || [ -n "$path" ]; do
+        path="${path#"${path%%[![:space:]]*}"}"
+        path="${path%"${path##*[![:space:]]}"}"
+        [ -z "$path" ] && continue
+        FILENAME=$(basename "$path")
+        if [ -n "$NAMES" ]; then
+            NAMES="$NAMES"$'\n'"$FILENAME"
+        else
+            NAMES="$FILENAME"
+        fi
+    done <<< "$RAW_PATHS"
+fi
+
+# 没有找到任何路径则退出
+if [ -z "$NAMES" ]; then
+    exit 0
+fi
 
 # 尝试使用 wl-clipboard (Wayland)
 if command -v wl-copy &> /dev/null; then
