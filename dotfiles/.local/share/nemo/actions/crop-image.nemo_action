@@ -4,6 +4,6 @@ Name[zh_CN]=使用 CropGUI 裁切图片
 Comment=Crop selected images with CropGUI
 Comment[zh_CN]=使用 CropGUI 裁切选中的图片
 Icon-Name=image-crop
-Exec=~/.local/share/nemo/scripts/fm-crop-image.sh %F
+Exec=bash -c '~/.local/share/nemo/scripts/fm-crop-image.sh "$@"' _ %F
 Selection=notnone
 Extensions=jpg;jpeg;png;gif;bmp;tiff;tif;webp;avif;ico;svg;heic;heif;
