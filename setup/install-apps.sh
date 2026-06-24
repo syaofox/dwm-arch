@@ -35,6 +35,7 @@ PACMAN_packages=(
     nodejs npm
     uv
     lazygit
+    code
 
     # 其他
     timeshift
@@ -55,7 +56,6 @@ log_info "Installing AUR packages via yay..."
 AUR_PACKAGES=(
     clipster
     opencode-bin
-    visual-studio-code-bin
     brave-origin-nightly-bin
     mint-y-icons
     mint-themes
