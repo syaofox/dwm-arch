@@ -56,7 +56,6 @@ fi
 
 log_info "Installing AUR packages via yay..."
 AUR_PACKAGES=(
-    clipster
     # brave-origin-nightly-bin
     mint-y-icons
     mint-themes
