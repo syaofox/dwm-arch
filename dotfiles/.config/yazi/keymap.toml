@@ -37,12 +37,17 @@ run  = "cd ~/Projects"
 desc = "Go to ~/Projects"
 
 [[mgr.prepend_keymap]]
+on   = [ "g", "v" ]
+run  = "cd ~/Videos"
+desc = "Go to ~/Videos"
+
+[[mgr.prepend_keymap]]
 on   = [ "g", "m" ]
 run  = "cd /mnt"
 desc = "Go to mnt"
 
 [[mgr.prepend_keymap]]
-on   = [ "g", "r" ]
+on   = [ "g", "b" ]
 run  = "cd ~/.local/share/Trash/files"
 desc = "Go to trash"
 
