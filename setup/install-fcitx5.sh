@@ -11,6 +11,8 @@ PACMAN_packages=(
     fcitx5-qt
     fcitx5-configtool
     fcitx5-pinyin-zhwiki
+    fcitx5-material-color
+    fcitx5-nord
     hunspell
     nuspell
     aspell
@@ -18,20 +20,10 @@ PACMAN_packages=(
     hunspell-en_US
 )
 
-AUR_PACKAGES=(
-    fcitx5-material-color
-    fcitx5-nord
-)
-
 log_info "Installing official packages..."
 if ! sudo pacman -S --needed --noconfirm "${PACMAN_packages[@]}"; then
     log_error "Failed to install some official packages"
     exit 1
-fi
-
-log_info "Installing AUR packages via yay..."
-if command -v yay >/dev/null; then
-    yay -S --needed --noconfirm "${AUR_PACKAGES[@]}" || log_warn "Some AUR packages failed to install"
 fi
 
 log_info "fcitx5 installation complete"
