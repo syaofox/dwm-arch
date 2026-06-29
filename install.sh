@@ -58,6 +58,7 @@ run_step "Compile and install slock" "./setup/install-slock.sh"
 run_step "Compile and install wallpick" "./setup/install-wallpick.sh"
 run_step "Compile and install sysmenu" "./setup/install-sysmenu.sh"
 
+run_step "Install Mint themes and icons" "./setup/install-mint-themes.sh"
 run_step "Install applications" "./setup/install-apps.sh"
 run_step "Install yazi" "./setup/install-yazi.sh"
 run_step "Install fonts" "./setup/install-fonts.sh"
