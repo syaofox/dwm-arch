@@ -55,3 +55,24 @@ while IFS= read -r rel_path; do
 done < <(cd "$DOTFILES_DIR" && find . \( -type f -o -type l \) 2>/dev/null | grep -v '^./\.git$' | grep -v '^./\.svn$')
 
 log_info "Dotfiles deployed successfully"
+
+log_step "Registering MIME associations..."
+
+# 图片 → gthumb（覆盖浏览器自注册）
+for mime in image/jpeg image/png image/gif image/bmp image/webp image/tiff image/svg+xml image/avif image/heic image/heif image/vnd.microsoft.icon; do
+    xdg-mime default org.gnome.gThumb.desktop "$mime" 2>/dev/null || true
+done
+
+# 文本/代码 → VS Code
+for mime in text/plain text/html text/markdown text/x-shellscript text/x-python text/x-json application/json text/x-lua text/x-yaml application/x-yaml text/x-toml application/toml text/javascript application/javascript text/x-typescript text/x-go text/x-rust text/x-csrc text/x-chdr text/x-c++src text/x-c++hdr text/css text/x-diff application/x-httpd-php application/xml text/xml; do
+    xdg-mime default code-oss.desktop "$mime" 2>/dev/null || true
+done
+
+# 媒体 → mpv
+xdg-mime default mpv.desktop video/* 2>/dev/null || true
+xdg-mime default mpv.desktop audio/* 2>/dev/null || true
+
+# PDF → chromium
+xdg-mime default chromium.desktop application/pdf 2>/dev/null || true
+
+log_info "MIME associations registered"
