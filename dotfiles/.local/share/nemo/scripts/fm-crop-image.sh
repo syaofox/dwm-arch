@@ -7,13 +7,8 @@ if [ $# -lt 1 ]; then
     exit 1
 fi
 
-if ! command -v cropgui &> /dev/null; then
-    zenity --error --text="未找到 cropgui！\n请先安装：\nsudo pacman -S cropgui\n或从 AUR 安装"
-    exit 1
-fi
-
 for image in "$@"; do
-    cropgui "$image"
+    gthumb "$image"
 done
 
 exit 0

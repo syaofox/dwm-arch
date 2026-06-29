@@ -1,8 +1,8 @@
 [Nemo Action]
-Name=Crop Image with CropGUI
-Name[zh_CN]=使用 CropGUI 裁切图片
-Comment=Crop selected images with CropGUI
-Comment[zh_CN]=使用 CropGUI 裁切选中的图片
+Name=Crop Image with gthumb
+Name[zh_CN]=使用 gthumb 裁切图片
+Comment=Crop selected images with gthumb
+Comment[zh_CN]=使用 gthumb 裁切选中的图片
 Icon-Name=image-crop
 Exec=bash -c '~/.local/share/nemo/scripts/fm-crop-image.sh "$@"' _ %F
 Selection=notnone
