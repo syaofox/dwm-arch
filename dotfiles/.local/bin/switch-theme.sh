@@ -104,12 +104,6 @@ switch_theme() {
         sed -i 's/^DarkTheme=.*/DarkTheme=dwm/' "$fcitx5_conf"
     fi
 
-    # 应用 xfce4-terminal 配色
-    xfce4_term_script="$HOME/.cache/xfce4-terminal-theme.sh"
-    if [ -f "$xfce4_term_script" ]; then
-        bash "$xfce4_term_script"
-    fi
-
     # 验证 GTK 主题是否存在
     gtk_theme=$(grep -m1 '^gtk\.theme:' "$theme_file" | sed 's/^gtk\.theme:[[:space:]]*//')
     if [ -n "$gtk_theme" ] && ! validate_gtk_theme "$gtk_theme"; then

@@ -56,6 +56,12 @@ done < <(cd "$DOTFILES_DIR" && find . \( -type f -o -type l \) 2>/dev/null | gre
 
 log_info "Dotfiles deployed successfully"
 
+log_step "Substituting path placeholders..."
+sed -i "s|__HOME__|$HOME|g" "$HOME/.config/gtk-3.0/bookmarks" 2>/dev/null || true
+sed -i "s|@HOME@|$HOME|g" "$HOME/.config/qt5ct/qt5ct.conf" 2>/dev/null || true
+sed -i "s|@HOME@|$HOME|g" "$HOME/.config/qt6ct/qt6ct.conf" 2>/dev/null || true
+log_info "Path placeholders substituted"
+
 log_step "Registering MIME associations from mimeapps.list..."
 MIMEAPPS="$DOTFILES_DIR/.config/mimeapps.list"
 if [ -f "$MIMEAPPS" ]; then

@@ -1,5 +1,5 @@
 #!/bin/bash
-# 使用 cropgui 裁切图片
+# 使用 gthumb 裁切图片
 # 用法: fm-crop-image.sh <文件1> [文件2] ...
 
 if [ $# -lt 1 ]; then

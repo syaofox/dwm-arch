@@ -4,11 +4,9 @@
 # 收集所有文件名，每行一个
 NAMES=""
 
-# 优先使用 Nemo 脚本环境变量（Scripts 菜单方式更可靠）
+# 优先使用 Nemo 脚本环境变量
 if [ -n "$NEMO_SCRIPT_SELECTED_FILE_PATHS" ]; then
     RAW_PATHS="$NEMO_SCRIPT_SELECTED_FILE_PATHS"
-elif [ -n "$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS" ]; then
-    RAW_PATHS="$NAUTILUS_SCRIPT_SELECTED_FILE_PATHS"
 elif [ $# -gt 0 ]; then
     RAW_PATHS=""
     for path in "$@"; do

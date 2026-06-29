@@ -1,12 +1,20 @@
 #!/usr/bin/env bash
 
-# 使用默认浏览器，没有则回退到 Firefox
+# 使用默认浏览器，没有则回退到可用浏览器
 
 set -e
 
 export LANGUAGE=zh_CN
 export LANG=zh_CN.UTF-8
 export LC_ALL=zh_CN.UTF-8
+
+try_launch() {
+    local cmd="$1"
+    shift
+    if command -v "$cmd" >/dev/null 2>&1; then
+        exec "$cmd" "$@"
+    fi
+}
 
 # 无参数，启动浏览器首页
 if [ $# -eq 0 ]; then
@@ -20,12 +28,11 @@ if [ $# -eq 0 ]; then
             exit 0
         fi
     fi
-    FIREFOX_APT="/usr/bin/firefox"
-    if [ -x "$FIREFOX_APT" ]; then
-        exec "$FIREFOX_APT"
-    fi
-    if command -v flatpak >/dev/null 2>&1 && flatpak info "org.mozilla.firefox" >/dev/null 2>&1; then
-        exec flatpak run "org.mozilla.firefox"
+    try_launch chromium
+    try_launch firefox
+    if command -v flatpak >/dev/null 2>&1; then
+        flatpak info "org.chromium.Chromium" >/dev/null 2>&1 && exec flatpak run "org.chromium.Chromium"
+        flatpak info "org.mozilla.firefox" >/dev/null 2>&1 && exec flatpak run "org.mozilla.firefox"
     fi
     notify-send "未找到浏览器" "未找到浏览器" || true
     exit 1
@@ -44,16 +51,12 @@ if command -v xdg-open >/dev/null 2>&1; then
     exit 0
 fi
 
-# 回退：Firefox
-FIREFOX_APT="/usr/bin/firefox"
-FIREFOX_FLATPAK_ID="org.mozilla.firefox"
-
-if [ -x "$FIREFOX_APT" ]; then
-    exec "$FIREFOX_APT" "$@"
-fi
-
-if command -v flatpak >/dev/null 2>&1 && flatpak info "${FIREFOX_FLATPAK_ID}" >/dev/null 2>&1; then
-    exec flatpak run "${FIREFOX_FLATPAK_ID}" "$@"
+# 回退到可用浏览器
+try_launch chromium "$@"
+try_launch firefox "$@"
+if command -v flatpak >/dev/null 2>&1; then
+    flatpak info "org.chromium.Chromium" >/dev/null 2>&1 && exec flatpak run "org.chromium.Chromium" "$@"
+    flatpak info "org.mozilla.firefox" >/dev/null 2>&1 && exec flatpak run "org.mozilla.firefox" "$@"
 fi
 
 notify-send "未找到浏览器" "未找到浏览器" || true

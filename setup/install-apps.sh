@@ -21,7 +21,6 @@ PACMAN_packages=(
 
     # 桌面工具
     rofi
-    # lxappearance
     nwg-look
     zenity
     maim
@@ -44,22 +43,12 @@ PACMAN_packages=(
     qalculate-gtk
 
     uget aria2
-
-    # vlc vlc-plugin-ffmpeg
 )
 
 log_info "Installing official packages..."
 if ! sudo pacman -S --needed --noconfirm "${PACMAN_packages[@]}"; then
     log_error "Failed to install some official packages"
     exit 1
-fi
-
-log_info "Installing AUR packages via yay..."
-AUR_PACKAGES=(
-    # brave-origin-nightly-bin
-)
-if command -v yay >/dev/null; then
-    yay -S --needed --noconfirm "${AUR_PACKAGES[@]}" || log_warn "Some AUR packages failed to install"
 fi
 
 log_info "User applications installation complete"
