@@ -23,6 +23,11 @@ Arch Linux DWM dotfiles & provisioning repo.
 - Use the best model for the task - premium models for complex tasks (like coding) and mid-tier models for simpler tasks, like documentation
 - After completing features (large or small), always run commands like lint, type check and next build to check code quality
 
+## 源码包更新
+
+- 所有通过 `setup/install-*.sh` 脚本从源码编译安装的包，必须在 `tools/update-source-packages.sh` 中注册对应的更新函数
+- 新增源码安装脚本时，同步在 `run_update()` 中添加调用
+
 ## 相关文档
 
 - archlinux: https://wiki.archlinux.org/
