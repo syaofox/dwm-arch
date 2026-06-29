@@ -1,15 +1,15 @@
 #!/bin/bash
-# Btrfs Subvolume Optimization Script (Arch Linux / Generic)
-# Version: 4.0
-# Description:
-#   - Creates separate subvolumes for /var/cache/pacman/pkg, /var/log, /var/lib/docker, /var/lib/libvirt
-#   - Applies recommended mount options (noatime, compress=zstd, etc.)
-#   - Sets NoCoW on directories that benefit from it (e.g., Docker, VM images)
-#   - Updates /etc/fstab and kernel parameters
-#   - Timeshift compatibility: ensures @ and @home are snapshots-compatible
-# Usage:
-#   ./btrfs.sh [username]          # Run normally (auto-detect chroot)
-#   ./btrfs.sh [username] --chroot # Force chroot mode
+# Btrfs 子卷优化脚本（Arch Linux / 通用）
+# 版本: 4.0
+# 描述:
+#   - 为 /var/cache/pacman/pkg、/var/log、/var/lib/docker、/var/lib/libvirt 创建独立子卷
+#   - 应用推荐挂载选项（noatime、compress=zstd 等）
+#   - 对受益目录设置 NoCoW（如 Docker、VM 镜像）
+#   - 更新 /etc/fstab 和内核参数
+#   - Timeshift 兼容性：确保 @ 和 @home 支持快照
+# 用法:
+#   ./btrfs.sh [用户名]          # 正常运行（自动检测 chroot）
+#   ./btrfs.sh [用户名] --chroot # 强制 chroot 模式
 
 
 [[ "$(id -u)" -ne 0 ]] && exec sudo "$0" "$@"
@@ -60,7 +60,7 @@ update_subvol_mount_opts() {
         "/@"*) local n="${subvol#*/@}"; mnt_point="/${n#/}" ;;
     esac
 
-    # Delete old entry, then rewrite with correct options
+    # 删除旧条目，然后用正确的选项重写
     sed -i "\|^UUID=${uuid}[[:space:]]*${mnt_point}[[:space:]]|d" "$fstab" 2>/dev/null || true
     local opts_field="rw,${mount_opts},subvol=${subvol}"
     echo -e "UUID=${uuid}\t${mnt_point}\tbtrfs\t${opts_field}\t0\t0" >> "$fstab"
@@ -276,7 +276,7 @@ run_btrfs_optimization() {
 
         rm -rf "$OLD_DIR" || log_warn "Cannot remove backup directory $OLD_DIR"
 
-        # Remove any existing entry for this mount point (may have stale options like compress)
+        # 移除该挂载点的现有条目（可能存在过时的选项如 compress）
         sed -i "\|^UUID=${UUID}.*${DIR}\s|d" /etc/fstab 2>/dev/null || true
         sed -i "\|^UUID=${UUID}.*subvol=${SUBVOL_NAME}|d" /etc/fstab 2>/dev/null || true
         echo -e "UUID=${UUID}\t${DIR}\tbtrfs\t${OPTS},subvol=${SUBVOL_NAME}\t0\t0" >> /etc/fstab

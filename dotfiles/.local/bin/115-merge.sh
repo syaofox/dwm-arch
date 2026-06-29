@@ -21,7 +21,7 @@ EOF
   exit 0
 }
 
-# --- Parse args ---
+# --- 解析参数 ---
 [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]] && usage
 
 batch_mode=false
@@ -34,10 +34,10 @@ input_dir="${1:-.}"
 input_dir="${input_dir%/}"
 output_path="${2:-}"
 
-# ---------- Merge one video ----------
-# Usage: merge_one <dir_with_m3u8> [parent_dir]
-#   parent_dir set  -> output placed in parent_dir (batch mode)
-#   parent_dir unset -> output placed next to m3u8 (single mode)
+# ---------- 合并单个视频 ----------
+# 用法: merge_one <含_m3u8_的目录> [父目录]
+#   设置了父目录  -> 输出放在父目录中（批处理模式）
+#   未设置父目录 -> 输出放在 m3u8 旁边（单文件模式）
 merge_one() {
   local input_dir="$1"
   local parent_dir="${2:-}"
@@ -102,7 +102,7 @@ merge_one() {
   echo "Done!"
 }
 
-# ---------- Batch mode ----------
+# ---------- 批处理模式 ----------
 if [[ "$batch_mode" == true ]]; then
   for subdir in "$input_dir"/*/; do
     [[ -d "$subdir" ]] || continue

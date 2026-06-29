@@ -11,7 +11,7 @@ fi
 
 log_info "Nvidia GPU detected, installing drivers..."
 
-# Install Nvidia packages
+# 安装 Nvidia 包
 NVIDIA_PACKAGES=(
     nvidia-open-dkms
     dkms
@@ -24,7 +24,7 @@ if ! sudo pacman -S --needed --noconfirm "${NVIDIA_PACKAGES[@]}"; then
     exit 1
 fi
 
-# Install matching kernel headers for DKMS
+# 安装匹配的内核头文件（DKMS 需要）
 log_info "Installing kernel headers for DKMS..."
 DETECTED_HEADERS=()
 for kernel_pkg in $(pacman -Q | awk '/^linux-?[0-9a-z]* /{print $1}'); do
@@ -43,15 +43,15 @@ else
     log_info "Kernel headers already installed or none needed"
 fi
 
-# Configure modprobe.d for Nvidia DRM
+# 配置 modprobe.d 启用 Nvidia DRM
 log_info "Configuring modprobe for Nvidia DRM..."
 MODPROBE_FILE="/etc/modprobe.d/nvidia.conf"
 if [ ! -f "$MODPROBE_FILE" ]; then
     cat << 'EOF' | sudo tee "$MODPROBE_FILE" > /dev/null
-# Nvidia DRM kernel module settings
+# Nvidia DRM 内核模块设置
 options nvidia_drm modeset=1
 options nvidia_drm fbdev=1
-# Preserve video memory across suspend/resume
+# 挂起/恢复时保留显存内容
 options nvidia NVreg_PreserveVideoMemoryAllocations=1
 EOF
     log_info "Created $MODPROBE_FILE"
@@ -59,7 +59,7 @@ else
     log_info "$MODPROBE_FILE already exists"
 fi
 
-# Add kernel parameters to GRUB (if GRUB is used)
+# 添加内核参数到 GRUB（如果使用 GRUB）
 if command -v grub-mkconfig &>/dev/null && [ -f /boot/grub/grub.cfg ]; then
     log_info "GRUB detected, adding Nvidia kernel parameters..."
     GRUB_FILE="/etc/default/grub"
@@ -84,12 +84,12 @@ else
     log_warn "No supported bootloader detected. Add 'nvidia_drm.modeset=1 nvidia_drm.fbdev=1' to your kernel parameters manually."
 fi
 
-# Blacklist nouveau driver
+# 禁用 nouveau 开源驱动
 log_info "Blacklisting nouveau driver..."
 NOUVEAU_BLACKLIST="/etc/modprobe.d/nouveau_blacklist.conf"
 if [ ! -f "$NOUVEAU_BLACKLIST" ]; then
     cat << 'EOF' | sudo tee "$NOUVEAU_BLACKLIST" > /dev/null
-# Blacklist the open-source nouveau driver for proprietary Nvidia driver
+# 禁用开源 nouveau 驱动以使用专有 Nvidia 驱动
 blacklist nouveau
 options nouveau modeset=0
 EOF
@@ -98,7 +98,7 @@ else
     log_info "$NOUVEAU_BLACKLIST already exists"
 fi
 
-# Enable Nvidia systemd services
+# 启用 Nvidia systemd 服务
 log_info "Enabling Nvidia systemd services..."
 for svc in nvidia-powerd nvidia-suspend nvidia-hibernate nvidia-resume; do
     if systemctl list-unit-files "$svc.service" &>/dev/null; then

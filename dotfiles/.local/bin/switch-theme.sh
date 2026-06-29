@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# Theme directories - adjust if using dotfiles symlinks
+# 主题目录 - 如果使用 dotfiles 软链接请调整
 
 # 主题目录 - 软连接到 dotfiles 目录下的 .Xresources.d
 THEME_DIR="$HOME/.Xresources.d"
 
-# Robust theme enumeration (handles spaces in names)
+# 稳健的主题枚举（处理名称中的空格）
 AVAILABLE_THEMES=()
 if [ -d "$THEME_DIR" ]; then
     while IFS= read -r -d '' theme; do
@@ -17,7 +17,7 @@ fi
 echo "Available themes: ${AVAILABLE_THEMES[*]}"
 
 show_menu() {
-    # Check if themes available
+    # 检查是否有可用主题
     if [ ${#AVAILABLE_THEMES[@]} -eq 0 ]; then
         dunstify -r 9988 -t 3000 "错误: 未找到主题文件在 $THEME_DIR"
         return 1
@@ -28,12 +28,12 @@ show_menu() {
         menu="$menu$theme\n"
     done
     
-    # Try with theme parameter, fallback to without if fails
+    # 尝试带主题参数启动，失败则回退到无参数
     echo -e "$menu" | rofi -dmenu -p "Theme" -i -theme-str "listview { columns: 2; lines: 6;} " 2>/dev/null || \
     echo -e "$menu" | rofi -dmenu -p "Theme" -i
 }
 
-# Validate GTK theme exists in standard locations
+# 验证 GTK 主题是否存在于标准位置
 validate_gtk_theme() {
     local theme="$1"
     local theme_paths=("$HOME/.themes" "$HOME/.local/share/themes" "/usr/share/themes")
@@ -46,13 +46,13 @@ validate_gtk_theme() {
     return 1
 }
 
-# Restart xsettingsd to apply changes
+# 重启 xsettingsd 以应用更改
 restart_xsettingsd() {
     if pgrep -x xsettingsd > /dev/null; then
         killall -HUP xsettingsd 2>/dev/null || killall xsettingsd 2>/dev/null && sleep 0.5
     fi
     
-    # Start xsettingsd if not running
+    # 如果 xsettingsd 未运行则启动
     if ! pgrep -x xsettingsd > /dev/null; then
         xsettingsd -c "$HOME/.config/xsettingsd/xsettingsd.conf" &
         disown

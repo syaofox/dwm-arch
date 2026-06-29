@@ -15,7 +15,7 @@ else
     log "numlockx not installed, skipping"
 fi
 
-# blueman-applet
+# 蓝牙小程序（已弃用，保留作参考）
 for svc in xsettingsd dunst slstatus pasystray nm-applet xfce4-clipman udiskie; do
     if pgrep -x "$svc" >/dev/null; then
         log "$svc already running, skipping"

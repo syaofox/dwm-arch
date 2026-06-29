@@ -3,7 +3,7 @@
 # Rofi 网页启动器 - 改进版
 # 配置文件位置: ~/.config/rofi/websites.txt
 # 文件格式: 显示名称|URL
-# 示例:
+# 例如:
 #   Google|https://www.google.com
 #   GitHub|https://github.com
 

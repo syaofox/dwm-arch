@@ -1,11 +1,11 @@
 #!/bin/bash
-# System Kernel Parameter Optimization Script (Arch Linux / Generic)
-# Version: 1.0
-# Description:
-#   - Increase inotify watcher limit (for IDEs, file watchers)
-# Usage:
-#   ./sysctl.sh                    # Apply optimizations
-#   ./sysctl.sh --chroot           # Write files only, skip runtime apply
+# 系统内核参数优化脚本（Arch Linux / 通用）
+# 版本: 1.0
+# 描述:
+#   - 增加 inotify 监控限制（适用于 IDE、文件监听器）
+# 用法:
+#   ./sysctl.sh                    # 应用优化
+#   ./sysctl.sh --chroot           # 仅写入文件，跳过运行时应用
 
 [[ "$(id -u)" -ne 0 ]] && exec sudo "$0" "$@"
 
@@ -41,7 +41,7 @@ run_sysctl_optimization() {
     cp -a /etc/sysctl.d/ "$BACKUP_DIR/" 2>/dev/null || true
 
     cat << 'EOF' > /etc/sysctl.d/99-inotify.conf
-# Increase inotify watcher limit (IDEs, file watchers, Neovim)
+# 增加 inotify 监控限制（IDE、文件监听器、Neovim）
 fs.inotify.max_user_watches=524288
 EOF
 

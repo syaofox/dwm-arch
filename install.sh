@@ -6,7 +6,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/setup/utils.sh"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
-# Function to ask user what to do on failure
+# 询问用户失败后如何处理
 ask_on_failure() {
     local step_name="$1"
     log_error "${step_name} failed"
@@ -26,7 +26,7 @@ ask_on_failure() {
     esac
 }
 
-# Function to run a step with error handling
+# 带错误处理的步骤执行函数
 run_step() {
     local step_name="$1"
     shift
@@ -67,8 +67,8 @@ run_step "Install fish shell" "./setup/install-fish.sh"
 
 
 run_step "Install Nvidia drivers" "./setup/install-nvidia.sh"
-# run_step "Install Docker" "./setup/install-docker.sh"
-# run_step "Install KVM virtualization" "./setup/install-kvm.sh"
+# run_step "安装 Docker" "./setup/install-docker.sh"
+# run_step "安装 KVM 虚拟化" "./setup/install-kvm.sh"
 
 run_step "Install FLathub" "./setup/install-flathub.sh"
 run_step "Deploy configuration files" "./setup/deploy-dotfiles.sh"

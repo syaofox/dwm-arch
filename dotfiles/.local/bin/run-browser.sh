@@ -11,7 +11,7 @@ export LC_ALL=zh_CN.UTF-8
 # 无参数，启动浏览器首页
 if [ $# -eq 0 ]; then
     if [ -n "$BROWSER" ]; then
-        exec $BROWSER
+        exec "$BROWSER"
     fi
     if command -v gtk-launch >/dev/null 2>&1; then
         default=$(xdg-settings get default-web-browser 2>/dev/null || true)
@@ -33,8 +33,7 @@ fi
 
 # $BROWSER 环境变量（最优先）
 if [ -n "$BROWSER" ]; then
-    # shellcheck disable=SC2086
-    exec $BROWSER "$@"
+    exec "$BROWSER" "$@"
 fi
 
 # xdg-open（系统默认浏览器）
@@ -45,7 +44,7 @@ if command -v xdg-open >/dev/null 2>&1; then
     exit 0
 fi
 
-# fallback: Firefox
+# 回退：Firefox
 FIREFOX_APT="/usr/bin/firefox"
 FIREFOX_FLATPAK_ID="org.mozilla.firefox"
 

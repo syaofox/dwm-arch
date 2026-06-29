@@ -1,11 +1,11 @@
 #!/bin/bash
-# ZRAM Swap Optimization Script (Arch Linux / Generic)
-# Version: 4.0
-# Description:
-#   - ZRAM swap configuration via systemd-zram-generator
-# Usage:
-#   ./zram.sh [percent]              # e.g. ./zram.sh 50 (default: 75)
-#   ./zram.sh [percent] --chroot     # Write config only, skip service mgmt
+# ZRAM 交换空间优化脚本（Arch Linux / 通用）
+# 版本: 4.0
+# 描述:
+#   - 通过 systemd-zram-generator 配置 ZRAM 交换空间
+# 用法:
+#   ./zram.sh [百分比]              # 例如 ./zram.sh 50（默认: 75）
+#   ./zram.sh [百分比] --chroot     # 仅写入配置，跳过服务管理
 # 验证脚本执行结果的方法
 # 1. 检查 ZRAM 设备
 # swapon --show
