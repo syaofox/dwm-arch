@@ -27,6 +27,7 @@ PACMAN_packages=(
     maim
     calcurse
     pasystray
+    chromium
 
     # 终端工具
     fzf fd ripgrep zoxide bat thefuck trash-cli
@@ -56,7 +57,7 @@ log_info "Installing AUR packages via yay..."
 AUR_PACKAGES=(
     clipster
     opencode-bin
-    brave-origin-nightly-bin
+    # brave-origin-nightly-bin
     mint-y-icons
     mint-themes
     cropgui

@@ -53,67 +53,31 @@ if [[ -z "$url" ]]; then
     exit 1
 fi
 
-is_browser_running() {
-    local browser_process="$1"
-    pgrep -x "$browser_process" > /dev/null 2>&1
-}
-
-command_exists() {
-    command -v "$1" > /dev/null 2>&1
-}
-
 open_url() {
     local url="$1"
-    local browser_cmd=""
 
-    local brave_running=false
-    local chrome_running=false
-    local firefox_running=false
-
-    for proc in brave-browser-stable brave-browser; do
-        if is_browser_running "$proc"; then
-            brave_running=true
-            break
+    # 检测正在运行的浏览器，优先开新标签
+    for proc in brave-browser-stable brave-browser brave-origin-nightly; do
+        if pgrep -x "$proc" >/dev/null 2>&1 && command -v brave >/dev/null 2>&1; then
+            brave --new-tab "$url"
+            return
         fi
     done
 
-    if ! $brave_running; then
-        for proc in google-chrome google-chrome-stable chrome chromium chromium-browser; do
-            if is_browser_running "$proc"; then
-                chrome_running=true
-                break
-            fi
-        done
-    fi
-
-    if ! $brave_running && ! $chrome_running; then
-        if is_browser_running firefox; then
-            firefox_running=true
+    for proc in google-chrome google-chrome-stable chrome chromium chromium-browser; do
+        if pgrep -x "$proc" >/dev/null 2>&1 && command -v "$proc" >/dev/null 2>&1; then
+            "$proc" "$url"
+            return
         fi
+    done
+
+    if pgrep -x firefox >/dev/null 2>&1 && command -v firefox >/dev/null 2>&1; then
+        firefox --new-tab "$url"
+        return
     fi
 
-    if $brave_running && command_exists brave; then
-        browser_cmd="brave --new-tab"
-    elif $chrome_running; then
-        for proc in google-chrome google-chrome-stable chrome chromium chromium-browser; do
-            if command_exists "$proc"; then
-                browser_cmd="$proc"
-                break
-            fi
-        done
-    elif $firefox_running && command_exists firefox; then
-        browser_cmd="firefox --new-tab"
-    fi
-
-    if [[ -z "$browser_cmd" ]]; then
-        xdg-open "$url"
-    else
-        if [[ "$browser_cmd" == *" "* ]]; then
-            sh -c "${browser_cmd} '${url}'"
-        else
-            "$browser_cmd" "$url"
-        fi
-    fi
+    # 无运行中的浏览器时，使用系统默认
+    xdg-open "$url"
 }
 
 open_url "$url"
