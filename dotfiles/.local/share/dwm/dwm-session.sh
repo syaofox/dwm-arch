@@ -31,7 +31,7 @@ else
     THEME="tokyonight"
 fi
 
-xrdb -merge ~/.Xresources
+[ -f "$HOME/.Xresources" ] && xrdb -merge "$HOME/.Xresources" || true
 if [ -f "$HOME/.Xresources.d/${THEME}" ]; then
     xrdb -merge "$HOME/.Xresources.d/${THEME}"
 fi

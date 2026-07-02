@@ -77,16 +77,25 @@ def parse_palette(filepath):
     return palette
 
 
-def render_template(text, context):
+MISSING_VARS = set()
+
+def render_template(text, context, tpl_name=''):
     def replacer(match):
+        global MISSING_VARS
         expr = match.group(1).strip()
         if '|' in expr:
             var_name, filter_name = (x.strip() for x in expr.split('|', 1))
-            value = context.get(var_name, '')
+            if var_name not in context:
+                MISSING_VARS.add(var_name)
+                return ''
+            value = context[var_name]
             if filter_name in FILTERS:
                 return FILTERS[filter_name](value)
             return value
-        return context.get(expr, '')
+        if expr not in context:
+            MISSING_VARS.add(expr)
+            return ''
+        return context[expr]
     return re.sub(r'\{\{(.*?)\}\}', replacer, text)
 
 
@@ -127,10 +136,16 @@ def main():
         if not os.path.isfile(tpl_path):
             continue
 
+        global MISSING_VARS
+        MISSING_VARS.clear()
+
         with open(tpl_path) as f:
             template_text = f.read()
 
-        rendered = render_template(template_text, palette)
+        rendered = render_template(template_text, palette, tpl_name)
+
+        if MISSING_VARS:
+            print("Warning: {}: missing macros: {}".format(tpl_name, ', '.join(sorted(MISSING_VARS))), file=sys.stderr)
 
         output = os.path.expanduser(rel_output)
         os.makedirs(os.path.dirname(output), exist_ok=True)
