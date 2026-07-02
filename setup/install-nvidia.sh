@@ -23,6 +23,7 @@ done
 NVIDIA_PACKAGES=(
     nvidia-open-dkms
     dkms
+    # CUDA NVDEC 硬解后端（功耗较高，若遇高功耗可设置 CUDA_DISABLE_PERF_BOOST=1，需驱动 ≥ 580.105.08）
     libva-nvidia-driver
     nvidia-utils
     nvidia-settings
