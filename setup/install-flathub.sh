@@ -14,7 +14,7 @@ flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.f
 log_info "Setting flatpak theme access..."
 flatpak override --user --filesystem=~/.themes:ro
 flatpak override --user --filesystem=~/.icons:ro
-flatpak override --user --env=GTK_THEME=Mint-Y-Teal
+# GTK 主题由 xsettingsd/theme-templates 动态管理，不在此硬编码
 
 log_info "Flathub configuration complete"
 exit 0

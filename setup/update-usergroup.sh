@@ -4,7 +4,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/utils.sh"
 
 log_step "Updating user groups..."
 
-sudo usermod -aG video,render $USER || exit 1
+sudo usermod -aG video,render "$(whoami)" || exit 1
 
 log_step "Creating user directories..."
 

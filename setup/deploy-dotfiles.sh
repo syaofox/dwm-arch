@@ -52,7 +52,7 @@ while IFS= read -r rel_path; do
     target="$USER_HOME/$rel_path"
 
     backup_and_copy "$src" "$target"
-done < <(cd "$DOTFILES_DIR" && find . \( -type f -o -type l \) 2>/dev/null | grep -v '^./\.git$' | grep -v '^./\.svn$')
+done < <(cd "$DOTFILES_DIR" && find . \( -type f -o -type l \) 2>/dev/null | grep -v '^./\.git' | grep -v '^./\.svn')
 
 log_info "Dotfiles deployed successfully"
 

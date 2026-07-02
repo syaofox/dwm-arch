@@ -15,8 +15,8 @@ CPU_CORES=$(nproc 2>/dev/null || grep -c ^processor /proc/cpuinfo 2>/dev/null ||
 
 log_info "Detected CPU cores: $CPU_CORES"
 
-if grep -q "^MAKEFLAGS=" "$MAKEPKG_CONF"; then
-    sudo sed -i "s/^MAKEFLAGS=.*/MAKEFLAGS=\"-j${CPU_CORES}\"/" "$MAKEPKG_CONF"
+if grep -q "^#\?MAKEFLAGS=" "$MAKEPKG_CONF"; then
+    sudo sed -i "s/^#\?MAKEFLAGS=.*/MAKEFLAGS=\"-j${CPU_CORES}\"/" "$MAKEPKG_CONF"
 else
     echo "MAKEFLAGS=\"-j${CPU_CORES}\"" | sudo tee -a "$MAKEPKG_CONF" > /dev/null
 fi

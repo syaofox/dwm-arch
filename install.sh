@@ -1,7 +1,9 @@
 #!/bin/bash
-[[ $EUID -eq 0 ]] && log_error "Please do not run this script as root. Use a regular user account with sudo privileges."
+set -Eeuo pipefail
 
 source "$(dirname "${BASH_SOURCE[0]}")/setup/utils.sh"
+
+[[ $EUID -eq 0 ]] && { echo "ERROR: Do not run this script as root. Use a regular user with sudo privileges." >&2; exit 1; }
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
