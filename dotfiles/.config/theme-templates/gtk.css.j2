@@ -197,3 +197,229 @@ button.destructive-action {
 button.destructive-action:hover {
   background-color: shade(@destructive_bg_color, 0.85);
 }
+
+/* Scrollbar */
+scrollbar {
+  background-color: @window_bg_color;
+}
+scrollbar trough {
+  background-color: transparent;
+  border: none;
+}
+scrollbar slider {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.85);
+  border: none;
+  min-width: 6px;
+  min-height: 6px;
+  border-radius: 3px;
+}
+scrollbar slider:hover {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.75);
+}
+scrollbar slider:active {
+  background-color: @accent_bg_color;
+}
+scrollbar .button {
+  background-color: transparent;
+  color: @window_fg_color;
+  border: none;
+}
+
+/* Switch */
+switch {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.7);
+  border: none;
+  border-radius: 12px;
+}
+switch:checked {
+  background-color: @accent_bg_color;
+}
+switch slider {
+  background-color: @card_bg_color;
+  border: 1px solid mix(@window_fg_color, @window_bg_color, 0.7);
+  border-radius: 100%;
+  min-width: 18px;
+  min-height: 18px;
+}
+switch:checked slider {
+  border-color: @accent_bg_color;
+}
+
+/* Scale */
+scale trough {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.85);
+  border: none;
+  border-radius: 3px;
+  min-height: 6px;
+}
+scale highlight {
+  background-color: @accent_bg_color;
+  border: none;
+  border-radius: 3px;
+}
+scale slider {
+  background-color: @card_bg_color;
+  border: 1px solid mix(@window_fg_color, @window_bg_color, 0.7);
+  border-radius: 100%;
+  min-width: 14px;
+  min-height: 14px;
+}
+scale slider:hover {
+  background-color: @window_bg_color;
+}
+scale slider:active {
+  border-color: @accent_bg_color;
+}
+
+/* Progressbar */
+progressbar trough {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.9);
+  border: none;
+  border-radius: 3px;
+  min-height: 8px;
+}
+progressbar progress {
+  background-color: @accent_bg_color;
+  border: none;
+  border-radius: 3px;
+}
+
+/* Notebook / Tabs */
+notebook {
+  background-color: @window_bg_color;
+  border: none;
+}
+notebook > header {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.95);
+  border: none;
+}
+notebook tab {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.92);
+  color: @window_fg_color;
+  border: none;
+  padding: 6px 12px;
+}
+notebook tab:checked {
+  background-color: @window_bg_color;
+  color: @window_fg_color;
+}
+notebook tab:hover {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.85);
+}
+
+/* Combobox */
+combobox {
+  background-color: @theme_base_color;
+  color: @theme_text_color;
+}
+combobox .arrow {
+  color: @window_fg_color;
+}
+combobox button {
+  background-color: @theme_base_color;
+  color: @theme_text_color;
+}
+
+/* Spinbutton */
+spinbutton {
+  background-color: @theme_base_color;
+  color: @theme_text_color;
+}
+spinbutton button {
+  background-color: @card_bg_color;
+  color: @window_fg_color;
+}
+
+/* List & List Row */
+list {
+  background-color: @window_bg_color;
+  color: @window_fg_color;
+  border: none;
+}
+row {
+  background-color: transparent;
+  color: @window_fg_color;
+}
+row:hover {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.95);
+}
+row:selected {
+  background-color: @accent_bg_color;
+  color: @accent_fg_color;
+}
+
+/* Treeview Column Header */
+treeview column-header button {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.92);
+  color: @window_fg_color;
+  border: none;
+  padding: 4px 8px;
+}
+treeview column-header button:hover {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.85);
+}
+
+/* Frame */
+frame {
+  border: 1px solid mix(@window_fg_color, @window_bg_color, 0.85);
+}
+frame > border {
+  border: none;
+}
+
+/* Separator */
+separator {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.88);
+  min-width: 1px;
+  min-height: 1px;
+}
+sidebar separator,
+.sidebar separator {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.88);
+}
+
+/* Dialog */
+dialog, messagedialog {
+  background-color: @window_bg_color;
+  color: @window_fg_color;
+}
+.dialog-action-area button {
+  background-color: @card_bg_color;
+  color: @window_fg_color;
+}
+.dialog-action-area button:hover {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.95);
+}
+
+/* Expander */
+expander {
+  color: @window_fg_color;
+}
+
+/* Calendar */
+calendar {
+  background-color: @window_bg_color;
+  color: @window_fg_color;
+  border: 1px solid mix(@window_fg_color, @window_bg_color, 0.85);
+}
+calendar:selected {
+  background-color: @accent_bg_color;
+  color: @accent_fg_color;
+}
+calendar.header {
+  background-color: mix(@window_fg_color, @window_bg_color, 0.95);
+  color: @window_fg_color;
+}
+calendar.button {
+  background-color: transparent;
+  color: @window_fg_color;
+}
+calendar.highlight {
+  color: @accent_bg_color;
+}
+
+/* OSD */
+.osd, .osd .view {
+  background-color: @window_bg_color;
+  color: @window_fg_color;
+}
