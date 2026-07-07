@@ -49,6 +49,7 @@ PACMAN_packages=(
 
     # 终端工具
     eza
+    less
 
     # 归档
     unzip 7zip
