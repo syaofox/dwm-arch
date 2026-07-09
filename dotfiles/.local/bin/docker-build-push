@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROJECT_DIR="${1:-.}"
+
+if ! command -v python3 &>/dev/null; then
+  echo "ERROR: python3 is required to read pyproject.toml" >&2
+  exit 1
+fi
+
+PYPROJECT="$PROJECT_DIR/pyproject.toml"
+if [ ! -f "$PYPROJECT" ]; then
+  echo "ERROR: $PYPROJECT not found" >&2
+  exit 1
+fi
+
+IMAGE_NAME=$(python3 -c "
+import tomllib
+with open('$PYPROJECT', 'rb') as f:
+    print(tomllib.load(f)['project']['name'])
+")
+VERSION=$(python3 -c "
+import tomllib
+with open('$PYPROJECT', 'rb') as f:
+    print(tomllib.load(f)['project']['version'])
+")
+
+REGISTRY="${REGISTRY:-10.10.10.2:5000}"
+GIT_SHA=$(git -C "$PROJECT_DIR" rev-parse --short HEAD 2>/dev/null || echo "unknown")
+TIMESTAMP=$(date +%Y%m%d%H%M%S)
+
+TAGS=(
+  "$REGISTRY/$IMAGE_NAME:latest"
+  "$REGISTRY/$IMAGE_NAME:$VERSION"
+  "$REGISTRY/$IMAGE_NAME:$VERSION-$GIT_SHA"
+  "$REGISTRY/$IMAGE_NAME:$TIMESTAMP"
+)
+
+echo "==> Building & pushing $IMAGE_NAME:$VERSION ($GIT_SHA) to $REGISTRY"
+echo "    (project: $PROJECT_DIR)"
+
+TAG_ARGS=()
+for tag in "${TAGS[@]}"; do
+  TAG_ARGS+=(-t "$tag")
+done
+
+docker buildx build --push "${TAG_ARGS[@]}" "$PROJECT_DIR"
+
+echo "==> Done:"
+for tag in "${TAGS[@]}"; do
+  echo "    $tag"
+done
