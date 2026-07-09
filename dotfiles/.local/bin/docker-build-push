@@ -1,33 +1,48 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_DIR="${1:-.}"
 REGISTRY="${REGISTRY:-10.10.10.2:5000}"
 KEEP_TAGS="${KEEP_TAGS:-2}"
 NAS_HOST="${NAS_HOST:-10.10.10.2}"
 NAS_USER="${NAS_USER:-syaofox}"
 REGISTRY_CONTAINER="${REGISTRY_CONTAINER:-registry}"
 
-if [ "$PROJECT_DIR" = "--help" ] || [ "$PROJECT_DIR" = "-h" ]; then
-  echo "Usage: docker-build-push [project-dir]"
-  echo ""
-  echo "Build and push a Docker image from a Python project's pyproject.toml."
-  echo "Reads name/version from pyproject.toml and pushes to a Docker registry."
-  echo "After push, cleans up old tags keeping the newest KEEP_TAGS."
-  echo ""
-  echo "Environment:"
-  echo "  REGISTRY              Registry URL (default: 10.10.10.2:5000)"
-  echo "  KEEP_TAGS             Number of old version tags to retain (default: 2)"
-  echo "  NAS_HOST              Host for SSH garbage-collect (default: 10.10.10.2)"
-  echo "  NAS_USER              SSH user for NAS (default: syaofox)"
-  echo "  REGISTRY_CONTAINER    Registry container name on NAS (default: registry)"
-  echo ""
-  echo "Examples:"
-  echo "  docker-build-push"
-  echo "  docker-build-push /path/to/project"
-  echo "  KEEP_TAGS=3 docker-build-push"
-  exit 0
-fi
+CLEAN=false
+PROJECT_DIR="."
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    -c|--clean) CLEAN=true; shift ;;
+    -h|--help)
+      echo "Usage: docker-build-push [options] [project-dir]"
+      echo ""
+      echo "Build and push a Docker image from a Python project's pyproject.toml."
+      echo ""
+      echo "Options:"
+      echo "  -c, --clean    Delete old tags and run garbage-collect after push"
+      echo "  -h, --help     Show this help"
+      echo ""
+      echo "Environment:"
+      echo "  REGISTRY              Registry URL (default: 10.10.10.2:5000)"
+      echo "  KEEP_TAGS             Old version tags to retain when --clean (default: 2)"
+      echo "  NAS_HOST              Host for SSH garbage-collect (default: 10.10.10.2)"
+      echo "  NAS_USER              SSH user for NAS (default: syaofox)"
+      echo "  REGISTRY_CONTAINER    Registry container name on NAS (default: registry)"
+      echo ""
+      echo "Examples:"
+      echo "  docker-build-push"
+      echo "  docker-build-push --clean"
+      echo "  docker-build-push -c /path/to/project"
+      exit 0 ;;
+    -*)
+      echo "ERROR: unknown option $1" >&2
+      echo "Usage: docker-build-push [-c] [project-dir]" >&2
+      exit 1 ;;
+    *)
+      PROJECT_DIR="$1"
+      shift ;;
+  esac
+done
 
 # ---- Find pyproject.toml ----
 find_pyproject() {
@@ -90,10 +105,7 @@ for tag in "${TAGS[@]}"; do
   echo "    $tag"
 done
 
-# ---- Cleanup old tags ----
-echo ""
-echo "==> Cleaning old tags (keeping $KEEP_TAGS per image)..."
-
+# ---- Cleanup functions ----
 cleanup_for_image() {
   local name="$1"
   local url="http://$REGISTRY/v2/$name/tags/list"
@@ -121,7 +133,6 @@ for t in data.get('tags', []):
 
   [ "${#candidates[@]}" -le "$KEEP_TAGS" ] && return 0
 
-  # Sort: version tags (X.Y.Z / X.Y.Z-gitsha) by semver, timestamps by value
   local sorted
   sorted=$(printf '%s\n' "${candidates[@]}" | sort -V) || sorted=$(printf '%s\n' "${candidates[@]}")
 
@@ -156,15 +167,19 @@ for t in data.get('tags', []):
   done
 }
 
-cleanup_for_image "$IMAGE_NAME"
-
-# ---- Trigger GC on NAS ----
-if [ -n "$NAS_HOST" ]; then
+# ---- Cleanup + GC (only with -c/--clean) ----
+if [ "$CLEAN" = true ]; then
   echo ""
-  echo "==> Running garbage-collect on NAS ($NAS_HOST)..."
-  ssh "$NAS_USER@$NAS_HOST" docker exec "$REGISTRY_CONTAINER" \
-    registry garbage-collect /etc/docker/registry/config.yml 2>&1 || \
-    echo "    WARN: GC failed (check NAS connectivity or container name)" >&2
+  echo "==> Cleaning old tags (keeping $KEEP_TAGS per image)..."
+  cleanup_for_image "$IMAGE_NAME"
+
+  if [ -n "$NAS_HOST" ]; then
+    echo ""
+    echo "==> Running garbage-collect on NAS ($NAS_HOST)..."
+    ssh "$NAS_USER@$NAS_HOST" docker exec "$REGISTRY_CONTAINER" \
+      registry garbage-collect /etc/docker/registry/config.yml 2>&1 || \
+      echo "    WARN: GC failed (check NAS connectivity or container name)" >&2
+  fi
 fi
 
 echo ""
