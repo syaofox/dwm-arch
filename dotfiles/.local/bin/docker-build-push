@@ -2,15 +2,55 @@
 set -euo pipefail
 
 PROJECT_DIR="${1:-.}"
+REGISTRY="${REGISTRY:-10.10.10.2:5000}"
+KEEP_TAGS="${KEEP_TAGS:-2}"
+NAS_HOST="${NAS_HOST:-10.10.10.2}"
+NAS_USER="${NAS_USER:-syaofox}"
+REGISTRY_CONTAINER="${REGISTRY_CONTAINER:-registry}"
+
+if [ "$PROJECT_DIR" = "--help" ] || [ "$PROJECT_DIR" = "-h" ]; then
+  echo "Usage: docker-build-push [project-dir]"
+  echo ""
+  echo "Build and push a Docker image from a Python project's pyproject.toml."
+  echo "Reads name/version from pyproject.toml and pushes to a Docker registry."
+  echo "After push, cleans up old tags keeping the newest KEEP_TAGS."
+  echo ""
+  echo "Environment:"
+  echo "  REGISTRY              Registry URL (default: 10.10.10.2:5000)"
+  echo "  KEEP_TAGS             Number of old version tags to retain (default: 2)"
+  echo "  NAS_HOST              Host for SSH garbage-collect (default: 10.10.10.2)"
+  echo "  NAS_USER              SSH user for NAS (default: syaofox)"
+  echo "  REGISTRY_CONTAINER    Registry container name on NAS (default: registry)"
+  echo ""
+  echo "Examples:"
+  echo "  docker-build-push"
+  echo "  docker-build-push /path/to/project"
+  echo "  KEEP_TAGS=3 docker-build-push"
+  exit 0
+fi
+
+# ---- Find pyproject.toml ----
+find_pyproject() {
+  local dir
+  dir=$(cd "$1" 2>/dev/null && pwd) || return 1
+  while [ "$dir" != "/" ]; do
+    if [ -f "$dir/pyproject.toml" ]; then
+      echo "$dir/pyproject.toml"
+      return 0
+    fi
+    dir=$(dirname "$dir")
+  done
+  return 1
+}
+
+PYPROJECT=$(find_pyproject "$PROJECT_DIR") || {
+  echo "ERROR: no pyproject.toml found in $PROJECT_DIR or any parent directory" >&2
+  exit 1
+}
+PROJECT_DIR=$(dirname "$PYPROJECT")
 
 if ! command -v python3 &>/dev/null; then
   echo "ERROR: python3 is required to read pyproject.toml" >&2
-  exit 1
-fi
-
-PYPROJECT="$PROJECT_DIR/pyproject.toml"
-if [ ! -f "$PYPROJECT" ]; then
-  echo "ERROR: $PYPROJECT not found" >&2
   exit 1
 fi
 
@@ -25,7 +65,6 @@ with open('$PYPROJECT', 'rb') as f:
     print(tomllib.load(f)['project']['version'])
 ")
 
-REGISTRY="${REGISTRY:-10.10.10.2:5000}"
 GIT_SHA=$(git -C "$PROJECT_DIR" rev-parse --short HEAD 2>/dev/null || echo "unknown")
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
@@ -50,3 +89,83 @@ echo "==> Done:"
 for tag in "${TAGS[@]}"; do
   echo "    $tag"
 done
+
+# ---- Cleanup old tags ----
+echo ""
+echo "==> Cleaning old tags (keeping $KEEP_TAGS per image)..."
+
+cleanup_for_image() {
+  local name="$1"
+  local url="http://$REGISTRY/v2/$name/tags/list"
+
+  local tags
+  tags=$(curl -sf "$url" 2>/dev/null | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+for t in data.get('tags', []):
+    print(t)
+" 2>/dev/null) || return 0
+
+  [ -z "$tags" ] && return 0
+
+  local current_tags=("latest" "$VERSION" "$VERSION-$GIT_SHA" "$TIMESTAMP")
+
+  local candidates=()
+  while IFS= read -r tag; do
+    local skip=0
+    for ct in "${current_tags[@]}"; do
+      [ "$tag" = "$ct" ] && { skip=1; break; }
+    done
+    [ "$skip" -eq 0 ] && candidates+=("$tag")
+  done <<< "$tags"
+
+  [ "${#candidates[@]}" -le "$KEEP_TAGS" ] && return 0
+
+  # Sort: version tags (X.Y.Z / X.Y.Z-gitsha) by semver, timestamps by value
+  local sorted
+  sorted=$(printf '%s\n' "${candidates[@]}" | sort -V) || sorted=$(printf '%s\n' "${candidates[@]}")
+
+  local count=0
+  local to_delete=()
+  while IFS= read -r tag; do
+    count=$((count + 1))
+    if [ "$count" -gt "$KEEP_TAGS" ]; then
+      to_delete+=("$tag")
+    fi
+  done <<< "$sorted"
+
+  if [ "${#to_delete[@]}" -eq 0 ]; then
+    echo "    nothing to clean"
+    return 0
+  fi
+
+  echo "    deleting ${#to_delete[@]} old tag(s)..."
+  for tag in "${to_delete[@]}"; do
+    local digest
+    digest=$(curl -sf -H "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+      "http://$REGISTRY/v2/$name/manifests/$tag" \
+      -D /dev/stdout 2>/dev/null | grep -i '^Docker-Content-Digest:' | head -1 | awk '{print $2}' | tr -d '\r') || continue
+
+    [ -z "$digest" ] && continue
+
+    if curl -sf -X DELETE "http://$REGISTRY/v2/$name/manifests/$digest" >/dev/null 2>&1; then
+      echo "      deleted $tag"
+    else
+      echo "      WARN: failed to delete $tag (deletion may be disabled on registry)" >&2
+    fi
+  done
+}
+
+cleanup_for_image "$IMAGE_NAME"
+
+# ---- Trigger GC on NAS ----
+if [ -n "$NAS_HOST" ]; then
+  echo ""
+  echo "==> Running garbage-collect on NAS ($NAS_HOST)..."
+  ssh "$NAS_USER@$NAS_HOST" docker exec "$REGISTRY_CONTAINER" \
+    registry garbage-collect /etc/docker/registry/config.yml 2>&1 || \
+    echo "    WARN: GC failed (check NAS connectivity or container name)" >&2
+fi
+
+echo ""
+echo "==> All done"
