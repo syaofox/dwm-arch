@@ -1,0 +1,21 @@
+{
+  imports = [
+    ./core.nix
+    ./gtk.nix
+    ./mime.nix
+    ./scripts.nix
+    ./programs/git.nix
+    ./programs/fish.nix
+    ./programs/kitty.nix
+    ./programs/neovim.nix
+    ./programs/rofi.nix
+    ./programs/yazi.nix
+    ./programs/nemo.nix
+    ./programs/dunst.nix
+    ./programs/picom.nix
+    ./programs/fcitx5.nix
+    ./dwm/session.nix
+    ./dwm/autostart.nix
+    ./xresources.nix
+  ];
+}

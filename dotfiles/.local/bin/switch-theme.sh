@@ -116,9 +116,11 @@ switch_theme() {
     fi
     systemctl stop --user fcitx5-daemon 2>/dev/null || true
 
-    if [[ -f "$HOME/.local/bin/generate-app-themes.py" ]]; then
-        python3 "$HOME/.local/bin/generate-app-themes.py" "$theme_file" || {
-            log_error "generate-app-themes.py failed"
+    local GENERATOR
+    GENERATOR=$(command -v generate-app-themes 2>/dev/null || echo "$HOME/.local/bin/generate-app-themes.py")
+    if [[ -x "$GENERATOR" ]]; then
+        "$GENERATOR" "$theme_file" || {
+            log_error "generate-app-themes failed"
             notify_user "错误: 生成应用配置失败" 3000
             return 1
         }

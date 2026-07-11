@@ -36,8 +36,11 @@ if [ -f "$HOME/.Xresources.d/${THEME}" ]; then
     xrdb -merge "$HOME/.Xresources.d/${THEME}"
 fi
 
-if [ ! -f "$HOME/.config/theme" ] && [ -f "$HOME/.local/bin/generate-app-themes.py" ] && [ -n "$THEME" ] && [ -f "$HOME/.Xresources.d/${THEME}" ]; then
-    python3 "$HOME/.local/bin/generate-app-themes.py" "$HOME/.Xresources.d/${THEME}"
+if [ ! -f "$HOME/.config/theme" ] && [ -n "$THEME" ] && [ -f "$HOME/.Xresources.d/${THEME}" ]; then
+    GENERATOR=$(command -v generate-app-themes 2>/dev/null || echo "$HOME/.local/bin/generate-app-themes.py")
+    if [ -x "$GENERATOR" ] && [ -d "$HOME/.config/theme-templates" ]; then
+        "$GENERATOR" "$HOME/.Xresources.d/${THEME}"
+    fi
 fi
 
 [ -x /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 ] && \

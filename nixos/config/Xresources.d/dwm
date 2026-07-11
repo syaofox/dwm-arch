@@ -1,0 +1,120 @@
+! dwm Original Classic Colors
+
+#define BLACK           #444444
+#define RED             #696969
+#define GREEN           #bbbbbb
+#define YELLOW          #eeeeee
+#define BLUE            #005577
+#define MAGENTA         #007eaf
+#define CYAN            #006e99
+#define WHITE           #eeeeee
+#define COMMENT         #555555
+
+#define BG              #222222
+#define FG              #bbbbbb
+#define BORDER          #444444
+#define SEL_BG          #005577
+
+#define WHITER          #ffffff
+#define MAGENTA_LIGHT   #31c3fd
+#define MAGENTA_DARK    #005577
+
+#define GTK_WIN_BG       #222222
+#define GTK_WIN_FG       #bbbbbb
+#define GTK_SURFACE_BG   #2d2d2d
+#define GTK_SURFACE_FG   #bbbbbb
+#define GTK_ACCENT_BG    #005577
+#define GTK_ACCENT_FG    #ffffff
+#define GTK_ERROR_BG     #f2b8b5
+#define GTK_ERROR_FG     #601410
+#define GTK_SUCCESS_BG   #bbbbbb
+#define GTK_SUCCESS_FG   #222222
+#define GTK_WARNING_BG   #eeeeee
+#define GTK_WARNING_FG   #222222
+
+#define GTK_WIN_BG_LIGHT       #eeeeee
+#define GTK_WIN_FG_LIGHT       #222222
+#define GTK_SURFACE_BG_LIGHT   #dddddd
+#define GTK_SURFACE_FG_LIGHT   #222222
+#define GTK_ACCENT_BG_LIGHT    #005577
+#define GTK_ACCENT_FG_LIGHT    #ffffff
+
+#define GTK_THEME       Mint-Y-Blue
+#define GTK_ICON        Mint-Y-Blue
+#define LIGHTDM_GTK_THEME       Mint-Y-Blue
+#define LIGHTDM_GTK_ICON        Mint-Y-Blue
+#define GTK_FONT        Noto Sans 10
+#define DARK_THEME      1
+#define YAZI_DARK       modus
+#define YAZI_LIGHT      modus
+#define NVIM_THEME      onedark
+
+
+! dwm 窗口颜色 - 未选中，无客户端
+dwm.col_norm_fg:        BLACK
+dwm.col_norm_bg:        BG
+dwm.col_norm_border:    BORDER
+
+! dwm 窗口颜色 - 选中，无客户端
+dwm.col_sel_fg:         FG
+dwm.col_sel_bg:         SEL_BG
+dwm.col_sel_border:     MAGENTA
+
+! dwm 窗口颜色 - 未选中，有客户端
+dwm.col_occ_fg:         FG
+dwm.col_occ_bg:         BG
+dwm.col_occ_border:     BORDER
+
+! dwm 窗口颜色 - 选中，有客户端
+dwm.col_selocc_fg:      FG
+dwm.col_selocc_bg:      SEL_BG
+dwm.col_selocc_border:  MAGENTA
+
+! dwm 状态栏颜色（dwmbar）
+dwm.col_status_fg:      WHITE
+dwm.col_status_bg:      BG
+dwm.col_status_border:  BG
+
+! dwm 窗口标题区颜色（标题栏）
+dwm.col_title_fg:       FG
+dwm.col_title_bg:       BG
+dwm.col_title_border:   BLACK
+
+! dwm 窗口标题区颜色 - 选中状态
+dwm.col_titlesel_fg:    FG
+dwm.col_titlesel_bg:    BG
+dwm.col_titlesel_border: BG
+
+! dwm Tag 标签下划线颜色
+dwm.col_tagunderline:   MAGENTA_LIGHT
+dwm.tagunderline: 0
+dwm.tagicons: 1
+
+! slstatus 状态栏颜色
+slstatus.sep:   BLACK
+slstatus.net:   WHITE
+slstatus.cpu:   WHITE
+slstatus.ram:   WHITE
+slstatus.gpu:   WHITE
+slstatus.temp:  WHITE
+slstatus.kbd:   RED
+slstatus.swap:  WHITE
+slstatus.time:  WHITE
+
+! slock 锁屏颜色
+slock.init:     BG
+slock.input:    MAGENTA_DARK
+slock.fail:     RED
+slock.text:     WHITE
+
+! wallpick 配色
+wallpick.background: BG
+wallpick.borderSelected: MAGENTA
+
+! sysmenu 配色
+sysmenu.background: BG
+sysmenu.foreground: FG
+sysmenu.backgroundSelected: MAGENTA
+sysmenu.foregroundSelected: WHITER
+sysmenu.backgroundHover: BORDER
+sysmenu.countdown: 5
