@@ -9,7 +9,9 @@ local get_data = ya.sync(function()
 
 	if #urls == 0 then
 		for i, url in pairs(cx.yanked) do
-			urls[i] = tostring(url)
+			if type(i) == "number" then
+				urls[#urls + 1] = tostring(url)
+			end
 		end
 		is_cut = cx.yanked.is_cut
 	end
@@ -64,13 +66,13 @@ end
 
 return {
 	entry = function(self, job)
+		ya.emit("escape", { visual = true })
+
 		local data = get_data()
 		if #data.urls == 0 then
 			notify("mv-dir", "No files to move", "warn", 3)
 			return
 		end
-
-		ya.emit("escape", { visual = true })
 
 		local dir_name = prompt_name()
 		if not dir_name then
