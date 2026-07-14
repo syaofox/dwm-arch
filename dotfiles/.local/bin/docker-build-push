@@ -86,11 +86,9 @@ TIMESTAMP=$(date +%Y%m%d%H%M%S)
 TAGS=(
   "$REGISTRY/$IMAGE_NAME:latest"
   "$REGISTRY/$IMAGE_NAME:$VERSION"
-  "$REGISTRY/$IMAGE_NAME:$VERSION-$GIT_SHA"
-  "$REGISTRY/$IMAGE_NAME:$TIMESTAMP"
 )
 
-echo "==> Building & pushing $IMAGE_NAME:$VERSION ($GIT_SHA) to $REGISTRY"
+echo "==> Building & pushing $IMAGE_NAME:$VERSION to $REGISTRY"
 echo "    (project: $PROJECT_DIR)"
 
 TAG_ARGS=()
@@ -120,7 +118,7 @@ for t in data.get('tags', []):
 
   [ -z "$tags" ] && return 0
 
-  local current_tags=("latest" "$VERSION" "$VERSION-$GIT_SHA" "$TIMESTAMP")
+  local current_tags=("latest" "$VERSION")
 
   local candidates=()
   while IFS= read -r tag; do
