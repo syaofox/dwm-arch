@@ -103,6 +103,20 @@ update_mint_themes() {
     fi
 }
 
+update_hf() {
+    log_step "检查更新: hf"
+    if command -v hf &>/dev/null; then
+        log_info "重新运行安装脚本以升级..."
+        if FORCE_UPGRADE=true "$PROJECT_ROOT/setup/install-hf.sh"; then
+            SUCCESS+=("hf")
+        else
+            FAILED+=("hf")
+        fi
+    else
+        log_info "hf 未安装，跳过"
+    fi
+}
+
 run_update() {
     echo ""
     echo "========================================"
@@ -118,6 +132,7 @@ run_update() {
 
     update_yay
     update_mint_themes
+    update_hf
 
     echo ""
     echo "========================================"
