@@ -44,10 +44,13 @@ show_menu() {
     local menu
     menu=$(printf "%s\n" "${AVAILABLE_THEMES[@]}")
 
+    local rofi_extra=()
+    if rofi -version 2>/dev/null | grep -qP '\b\d+\.([6-9]|\d{2,})' 2>/dev/null; then
+        rofi_extra=(-theme-str "listview { columns: 2; lines: 6; }")
+    fi
+
     local choice
-    choice=$(echo -e "$menu" | rofi -dmenu -p "Theme" -i \
-        -theme-str "listview { columns: 2; lines: 6; }" 2>/dev/null) || \
-    choice=$(echo -e "$menu" | rofi -dmenu -p "Theme" -i 2>/dev/null) || true
+    choice=$(echo -e "$menu" | rofi -dmenu -p "Theme" -i "${rofi_extra[@]}" 2>/dev/null) || true
 
     [[ -z "$choice" ]] && return 1
     echo "$choice"
