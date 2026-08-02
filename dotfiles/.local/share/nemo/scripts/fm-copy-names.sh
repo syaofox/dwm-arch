@@ -1,37 +1,36 @@
 #!/bin/bash
 # 复制选中文件/文件夹的名称到剪贴板（不包含路径）
 
+# 收集选中的路径：优先使用 Nemo 脚本环境变量，回退到位置参数
+# Nemo 行为：未选中时传入当前目录，需拒绝
+FILES=()
+if [ -n "${NEMO_SCRIPT_SELECTED_FILE_PATHS:-}" ]; then
+    while IFS= read -r f; do
+        [ -n "$f" ] && FILES+=("$f")
+    done <<< "$NEMO_SCRIPT_SELECTED_FILE_PATHS"
+elif [ $# -eq 1 ] && [ -d "$1" ]; then
+    zenity --error --text="未选中任何文件，无法操作！"
+    exit 1
+else
+    FILES=("$@")
+fi
+
+if [ "${#FILES[@]}" -eq 0 ]; then
+    exit 0
+fi
+
 # 收集所有文件名，每行一个
 NAMES=""
 
-# 优先使用 Nemo 脚本环境变量
-if [ -n "$NEMO_SCRIPT_SELECTED_FILE_PATHS" ]; then
-    RAW_PATHS="$NEMO_SCRIPT_SELECTED_FILE_PATHS"
-elif [ $# -gt 0 ]; then
-    RAW_PATHS=""
-    for path in "$@"; do
-        if [ -n "$RAW_PATHS" ]; then
-            RAW_PATHS="$RAW_PATHS"$'\n'"$path"
-        else
-            RAW_PATHS="$path"
-        fi
-    done
-fi
-
-# 处理路径（去除两端空白，跳过空行）
-if [ -n "$RAW_PATHS" ]; then
-    while IFS= read -r path || [ -n "$path" ]; do
-        path="${path#"${path%%[![:space:]]*}"}"
-        path="${path%"${path##*[![:space:]]}"}"
-        [ -z "$path" ] && continue
-        FILENAME=$(basename "$path")
-        if [ -n "$NAMES" ]; then
-            NAMES="$NAMES"$'\n'"$FILENAME"
-        else
-            NAMES="$FILENAME"
-        fi
-    done <<< "$RAW_PATHS"
-fi
+for path in "${FILES[@]}"; do
+    [ -z "$path" ] && continue
+    FILENAME=$(basename "$path")
+    if [ -n "$NAMES" ]; then
+        NAMES="$NAMES"$'\n'"$FILENAME"
+    else
+        NAMES="$FILENAME"
+    fi
+done
 
 # 没有找到任何路径则退出
 if [ -z "$NAMES" ]; then

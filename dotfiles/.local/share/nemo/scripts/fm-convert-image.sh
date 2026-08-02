@@ -100,6 +100,14 @@ for input_file in "$@"; do
     # 生成输出文件名
     OUTPUT_FILE="${DIR_NAME}/${NAME_WITHOUT_EXT}.${TARGET_FORMAT}"
     
+    # 如果输出文件与输入文件相同（同格式转换），拒绝原地覆盖，防止源文件损坏
+    if [ "$OUTPUT_FILE" = "$ABS_INPUT" ]; then
+        echo "跳过: 输入输出为同一文件，无法原地转换: $ABS_INPUT"
+        FAIL_COUNT=$((FAIL_COUNT + 1))
+        FAILED_FILES="${FAILED_FILES}""${BASE_NAME} (同格式转换)"$'\n'
+        continue
+    fi
+
     # 如果输出文件已存在，询问是否覆盖
     if [ -f "$OUTPUT_FILE" ]; then
         if ! zenity --question --text="文件已存在:\n${OUTPUT_FILE}\n\n是否覆盖？" --title="文件已存在" 2>/dev/null; then
@@ -122,8 +130,8 @@ done
 # 显示结果
 if [ $FAIL_COUNT -eq 0 ]; then
     zenity --info --text="转换完成！\n\n成功: ${SUCCESS_COUNT} 个文件" --title="转换成功"
+    exit 0
 else
     zenity --warning --text="转换完成\n\n成功: ${SUCCESS_COUNT} 个文件\n失败: ${FAIL_COUNT} 个文件\n\n失败的文件:\n${FAILED_FILES}" --title="转换结果"
+    exit 1
 fi
-
-exit 0

@@ -1,38 +1,36 @@
 #!/bin/bash
 # 复制选中文件/文件夹的完整路径到剪贴板
 
+# 收集选中的路径：优先使用 Nemo 脚本环境变量，回退到位置参数
+# Nemo 行为：未选中时传入当前目录，需拒绝
+FILES=()
+if [ -n "${NEMO_SCRIPT_SELECTED_FILE_PATHS:-}" ]; then
+    while IFS= read -r f; do
+        [ -n "$f" ] && FILES+=("$f")
+    done <<< "$NEMO_SCRIPT_SELECTED_FILE_PATHS"
+elif [ $# -eq 1 ] && [ -d "$1" ]; then
+    zenity --error --text="未选中任何文件，无法操作！"
+    exit 1
+else
+    FILES=("$@")
+fi
+
+if [ "${#FILES[@]}" -eq 0 ]; then
+    exit 0
+fi
+
 # 收集所有路径，每行一个
 PATHS=""
 
-# 优先使用 Nemo 脚本环境变量
-if [ -n "$NEMO_SCRIPT_SELECTED_FILE_PATHS" ]; then
-    RAW_PATHS="$NEMO_SCRIPT_SELECTED_FILE_PATHS"
-elif [ $# -gt 0 ]; then
-    RAW_PATHS=""
-    for path in "$@"; do
-        ABS_PATH=$(readlink -f "$path" 2>/dev/null || realpath "$path" 2>/dev/null || echo "$path")
-        if [ -n "$RAW_PATHS" ]; then
-            RAW_PATHS="$RAW_PATHS"$'\n'"$ABS_PATH"
-        else
-            RAW_PATHS="$ABS_PATH"
-        fi
-    done
-fi
-
-# 处理路径（去除两端空白，跳过空行）
-if [ -n "$RAW_PATHS" ]; then
-    while IFS= read -r path || [ -n "$path" ]; do
-        path="${path#"${path%%[![:space:]]*}"}"
-        path="${path%"${path##*[![:space:]]}"}"
-        [ -z "$path" ] && continue
-        ABS_PATH=$(readlink -f "$path" 2>/dev/null || realpath "$path" 2>/dev/null || echo "$path")
-        if [ -n "$PATHS" ]; then
-            PATHS="$PATHS"$'\n'"$ABS_PATH"
-        else
-            PATHS="$ABS_PATH"
-        fi
-    done <<< "$RAW_PATHS"
-fi
+for path in "${FILES[@]}"; do
+    [ -z "$path" ] && continue
+    ABS_PATH=$(readlink -f "$path" 2>/dev/null || realpath "$path" 2>/dev/null || echo "$path")
+    if [ -n "$PATHS" ]; then
+        PATHS="$PATHS"$'\n'"$ABS_PATH"
+    else
+        PATHS="$ABS_PATH"
+    fi
+done
 
 # 没有找到任何路径则退出
 if [ -z "$PATHS" ]; then

@@ -1,14 +1,24 @@
 #!/bin/bash
 
+# 收集选中的路径：优先使用 Nemo 脚本环境变量，回退到位置参数
+# Nemo 行为：未选中时传入当前目录，需拒绝，避免误扫描整个目录树
+items=()
+if [ -n "${NEMO_SCRIPT_SELECTED_FILE_PATHS:-}" ]; then
+    while IFS= read -r f; do
+        [ -n "$f" ] && items+=("$f")
+    done <<< "$NEMO_SCRIPT_SELECTED_FILE_PATHS"
+elif [ $# -eq 1 ] && [ -d "$1" ]; then
+    zenity --error --title="重复文件清理" --text="未选中任何文件，无法操作！" --width=360
+    exit 1
+else
+    items=("$@")
+fi
+
 # 如果没有参数，退出
-if [ $# -eq 0 ]; then
+if [ ${#items[@]} -eq 0 ]; then
     exit 0
 fi
 
-# 选择条件：
-# - 至少选中一个文件夹，或者
-# - 选中多个（>=2）文件或文件夹
-items=("$@")
 count=${#items[@]}
 
 has_dir=0
@@ -21,7 +31,7 @@ done
 
 if [ "$has_dir" -eq 0 ] && [ "$count" -lt 2 ]; then
     zenity --error --title="重复文件清理" --text="请至少选中一个文件夹，或者选中多个文件/文件夹后再运行\"删除重复项\"。" --width=360
-    exit 0
+    exit 1
 fi
 
 # 将选中的路径展开成"要检查的文件列表"：
