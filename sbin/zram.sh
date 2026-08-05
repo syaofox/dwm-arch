@@ -6,6 +6,7 @@
 # 用法:
 #   ./zram.sh [百分比]              # 例如 ./zram.sh 50（默认: 75）
 #   ./zram.sh [百分比] --chroot     # 仅写入配置，跳过服务管理
+#   ./zram.sh --disable             # 关闭 ZRAM（移除配置并禁用服务）
 # 验证脚本执行结果的方法
 # 1. 检查 ZRAM 设备
 # swapon --show
@@ -38,12 +39,56 @@ is_chroot() {
     return 1
 }
 
+run_zram_disable() {
+    log_step "Disabling ZRAM"
+    if [[ -f /etc/systemd/zram-generator.conf ]]; then
+        BACKUP_DIR="/root/zram_backup_$(date +%Y%m%d_%H%M%S)"
+        mkdir -p "$BACKUP_DIR"
+        cp -a /etc/systemd/zram-generator.conf "${BACKUP_DIR}/zram-generator.conf.bak"
+        log_info "Config backed up to ${BACKUP_DIR}/zram-generator.conf.bak"
+        rm -f /etc/systemd/zram-generator.conf
+        log_info "Removed /etc/systemd/zram-generator.conf"
+    else
+        log_info "No /etc/systemd/zram-generator.conf found, skipping removal"
+    fi
+
+    local UNIT
+    local UNITS
+    UNITS=$(systemctl list-unit-files 'systemd-zram-setup@*' --no-legend --no-pager 2>/dev/null | awk '$1 !~ /^systemd-zram-setup@\.service$/ {print $1}')
+    if [[ -d /run/systemd/system ]] && [[ -n "$UNITS" ]]; then
+        for UNIT in $UNITS; do
+            systemctl stop "$UNIT" 2>/dev/null || true
+            systemctl disable "$UNIT" 2>/dev/null || true
+            log_info "Stopped and disabled $UNIT"
+        done
+    else
+        log_info "systemd not running or no zram service units found, service management skipped"
+    fi
+
+    local ZRAM_DEV
+    for ZRAM_DEV in $(swapon --show=NAME --noheadings 2>/dev/null | grep '^/dev/zram' || true); do
+        swapoff "$ZRAM_DEV" 2>/dev/null || true
+        log_info "Swap off $ZRAM_DEV"
+    done
+
+    log_info "=========================================="
+    log_info "ZRAM disabled"
+    log_info "  - Config removed: /etc/systemd/zram-generator.conf"
+    log_info "  - Service disabled: systemd-zram-setup@*.service"
+    log_info "=========================================="
+    log_warn "Reboot to fully unload zram modules"
+}
+
 run_zram_optimization() {
     local CHROOT_MODE=false
     local ZRAM_PERCENT=""
 
     for arg in "$@"; do
         case "$arg" in
+            --disable)
+                run_zram_disable
+                return 0
+                ;;
             --chroot) CHROOT_MODE=true ;;
             *)
                 if [[ -z "$ZRAM_PERCENT" ]]; then
