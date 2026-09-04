@@ -138,7 +138,7 @@ TITLE="重复文件清理"
                 processed_files["$file"]=1
                 
                 # 将文件添加到对应哈希值的文件列表中（格式：hash|file）
-                echo "$sum|$file" >> "$HASH_TO_FILES_FILE"
+                printf '%s|%s\n' "$sum" "$file" >> "$HASH_TO_FILES_FILE"
                 
                 ((processed++))
                 if [ $files_to_hash -gt 0 ]; then
@@ -167,7 +167,7 @@ TITLE="重复文件清理"
             fi
             
             # 将文件添加到对应哈希值的文件列表中（格式：hash|file）
-            echo "$sum|$file" >> "$HASH_TO_FILES_FILE"
+            printf '%s|%s\n' "$sum" "$file" >> "$HASH_TO_FILES_FILE"
             
             ((processed++))
             if [ $files_to_hash -gt 0 ]; then
@@ -203,7 +203,7 @@ sort -t'|' -k1 "$HASH_TO_FILES_FILE" | {
                 for f in "${files_for_hash[@]}"; do
                     mtime=$(stat -c%Y "$f" 2>/dev/null || stat -f%m "$f" 2>/dev/null)
                     if [ -n "$mtime" ]; then
-                        echo "$mtime|$f" >> "$temp_sort_file"
+                        printf '%s|%s\n' "$mtime" "$f" >> "$temp_sort_file"
                     fi
                 done
                 
@@ -239,7 +239,7 @@ sort -t'|' -k1 "$HASH_TO_FILES_FILE" | {
         for f in "${files_for_hash[@]}"; do
             mtime=$(stat -c%Y "$f" 2>/dev/null || stat -f%m "$f" 2>/dev/null)
             if [ -n "$mtime" ]; then
-                echo "$mtime|$f" >> "$temp_sort_file"
+                printf '%s|%s\n' "$mtime" "$f" >> "$temp_sort_file"
             fi
         done
         
