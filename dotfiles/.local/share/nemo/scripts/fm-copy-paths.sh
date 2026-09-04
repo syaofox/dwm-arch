@@ -8,9 +8,6 @@ if [ -n "${NEMO_SCRIPT_SELECTED_FILE_PATHS:-}" ]; then
     while IFS= read -r f; do
         [ -n "$f" ] && FILES+=("$f")
     done <<< "$NEMO_SCRIPT_SELECTED_FILE_PATHS"
-elif [ $# -eq 1 ] && [ -d "$1" ]; then
-    zenity --error --text="未选中任何文件，无法操作！"
-    exit 1
 else
     FILES=("$@")
 fi

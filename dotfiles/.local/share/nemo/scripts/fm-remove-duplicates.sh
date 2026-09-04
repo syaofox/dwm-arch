@@ -7,9 +7,6 @@ if [ -n "${NEMO_SCRIPT_SELECTED_FILE_PATHS:-}" ]; then
     while IFS= read -r f; do
         [ -n "$f" ] && items+=("$f")
     done <<< "$NEMO_SCRIPT_SELECTED_FILE_PATHS"
-elif [ $# -eq 1 ] && [ -d "$1" ]; then
-    zenity --error --title="重复文件清理" --text="未选中任何文件，无法操作！" --width=360
-    exit 1
 else
     items=("$@")
 fi
