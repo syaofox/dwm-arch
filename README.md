@@ -17,10 +17,10 @@ Provisioning scripts and dotfiles for deploying a DWM desktop environment on a m
 | `dotfiles/` | User-level config (`~/.config/`, `~/.local/bin/`, etc.) |
 | `sdotfiles/` | System-level config (`/etc/`, `/usr/`) |
 | `sbin/` | Admin scripts (btrfs, zram, sysctl) |
-| `tools/` | Utility scripts (config backup/restore) |
+| `tools/` | Utility scripts (update/sync, secret backup, source updates) |
 | `install.sh` | Main orchestrator — runs all `setup/` scripts |
 
-> **Re-deploy dotfiles**: Run `./setup/deploy-dotfiles.sh` to re-deploy user configs from `dotfiles/` to `~` (creates backups before overwriting). Similarly, `./setup/deploy-sdotfiles.sh` for system configs.
+> **Daily update**: Run `./tools/update.sh` for incremental sync (supports `--dry-run` and `--only <path>`). Full re-deploy still available via `./setup/deploy-dotfiles.sh` / `./setup/deploy-sdotfiles.sh`.
 
 ## Custom Scripts (`~/.local/bin/`)
 

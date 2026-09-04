@@ -28,6 +28,11 @@ Arch Linux DWM dotfiles & provisioning repo.
 - 所有通过 `setup/install-*.sh` 脚本从源码编译安装的包，必须在 `tools/update-source-packages.sh` 中注册对应的更新函数
 - 新增源码安装脚本时，同步在 `run_update()` 中添加调用
 
+## 日常同步
+
+- 日常增量同步使用 `tools/update.sh`（`--dry-run` / `--only <repo相对路径>` / `dotfiles|sdotfiles|all`），幂等且 `cp -p` 保权限，支持空格路径；全量仍可用 `setup/deploy-dotfiles.sh`
+- `tools/backup-secrets.sh` 管理敏感备份（原 `config-manager.sh` 已更名为此，保留兼容 shim）
+
 ## 相关文档
 
 - archlinux: https://wiki.archlinux.org/
