@@ -2,10 +2,8 @@
 x-scheme-handler/http=chromium.desktop
 x-scheme-handler/https=chromium.desktop
 x-scheme-handler/about=chromium.desktop
-
-# 图片
 image/jpeg=org.gnome.gThumb.desktop
-image/png=org.gnome.gThumb.desktop
+image/png=com.xnview.XnViewMP.desktop
 image/gif=org.gnome.gThumb.desktop
 image/bmp=org.gnome.gThumb.desktop
 image/webp=org.gnome.gThumb.desktop
@@ -15,10 +13,8 @@ image/avif=org.gnome.gThumb.desktop
 image/heic=org.gnome.gThumb.desktop
 image/heif=org.gnome.gThumb.desktop
 image/vnd.microsoft.icon=org.gnome.gThumb.desktop
-
-# 文本/代码
 text/plain=code-oss.desktop
-text/html=code-oss.desktop
+text/html=chromium.desktop
 text/markdown=code-oss.desktop
 text/x-shellscript=code-oss.desktop
 text/x-python=code-oss.desktop
@@ -43,11 +39,7 @@ text/x-diff=code-oss.desktop
 application/x-httpd-php=code-oss.desktop
 application/xml=code-oss.desktop
 text/xml=code-oss.desktop
-
-# 其他文档
 application/pdf=chromium.desktop
-
-# 视频
 video/mp4=mpv.desktop
 video/mpeg=mpv.desktop
 video/x-mpeg2=mpv.desktop
@@ -86,8 +78,6 @@ video/3gpp=mpv.desktop
 video/3gpp2=mpv.desktop
 video/dv=mpv.desktop
 video/vnd.avi=mpv.desktop
-
-# 音频
 audio/aac=mpv.desktop
 audio/x-aac=mpv.desktop
 audio/vnd.dolby.heaac.1=mpv.desktop
@@ -147,3 +137,11 @@ audio/vnd.dts.hd=mpv.desktop
 audio/x-adpcm=mpv.desktop
 audio/m3u=mpv.desktop
 audio/vnd.wave=mpv.desktop
+application/vnd.comicbook+zip=org.gnome.FileRoller.desktop
+x-scheme-handler/unknown=chromium.desktop
+x-scheme-handler/opencode=ai.opencode.desktop.desktop
+inode/directory=nemo.desktop
+
+[Added Associations]
+application/vnd.comicbook+zip=org.gnome.FileRoller.desktop;
+image/png=com.xnview.XnViewMP.desktop;
