@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # tools/update.sh — 增量同步入口 (dotfiles/sdotfiles)
-# 用法: tools/update.sh [--dry-run] [--only <repo相对路径>] [dotfiles|sdotfiles|all]
+# 用法: tools/update.sh [--dry-run] [--only <repo相对路径>] [--exclude <glob>] [dotfiles|sdotfiles|all]
 # 特性: 幂等 (checksum 相同则跳过), cp -p / rsync -a 保权限 (+x), 支持空格路径, --dry-run 仅 diff
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
@@ -31,6 +31,10 @@ SDOTFILES_BACKUP_DONE=0
 
 DRY_RUN=false
 ONLY_FILTER=""
+# --exclude 可重复传入, 累积为模式数组
+EXCLUDE_FILTERS=()
+# --exclude=<value> 解析时的临时槽位 (与 ONLY_FILTER 的处理对称)
+EXCLUDE_VALUE=""
 MODE="all"
 
 TOTAL_UPDATED=0
@@ -40,7 +44,7 @@ TOTAL_NEW=0
 usage() {
     local exit_code="${1:-0}"
     cat <<EOF
-Usage: ${0##*/} [--dry-run] [--only <repo相对路径>] [dotfiles|sdotfiles|all]
+Usage: ${0##*/} [--dry-run] [--only <repo相对路径>] [--exclude <glob>] [dotfiles|sdotfiles|all]
 
 增量同步 dotfiles (用户级 \$HOME) 与 sdotfiles (系统级 /) 到本地,幂等且保权限.
 
@@ -58,6 +62,13 @@ Options:
                               --only dotfiles/.config
                               --only sdotfiles/etc/fonts/local.conf
                               --only sdotfiles/etc
+  --exclude <glob>      跳过匹配的文件/目录 (仓库相对路径, 可重复传入)
+                        支持 * 通配 (bash 模式匹配) 与前缀式匹配:
+                        模式 X 同时匹配 X 本身与 X/ 下的所有内容
+                        用于保护含凭据或本机专属、不应被 repo 覆盖的路径
+                        例如: --exclude dotfiles/.config/fish/conf.d/01-env.fish
+                              --exclude dotfiles/.gitconfig
+                              --exclude 'dotfiles/.config/fish/conf.d/*'
   -h, --help            显示此帮助并退出
 
 Examples:
@@ -69,6 +80,8 @@ Examples:
   ${0##*/} --dry-run --only dotfiles/.local/share/nemo/scripts/fm-move-to-folder.sh dotfiles
   ${0##*/} --only sdotfiles/etc/fonts/local.conf sdotfiles
   ${0##*/} --dry-run --only sdotfiles/etc sdotfiles
+  ${0##*/} --dry-run --exclude dotfiles/.gitconfig dotfiles
+  ${0##*/} --exclude dotfiles/.config/fish/conf.d/01-env.fish --exclude 'dotfiles/.cache/*' dotfiles
 
 Backup:
   dotfiles  -> \$HOME/.config-backup-时间戳 (复用 deploy-dotfiles.sh 逻辑)
@@ -101,6 +114,23 @@ while [[ $# -gt 0 ]]; do
                 log_error "--only 需要一个非空路径"
                 usage 1
             fi
+            shift
+            ;;
+        --exclude)
+            if [[ $# -lt 2 || -z "${2:-}" || "${2:-}" == -* ]]; then
+                log_error "--exclude 需要一个参数 <glob>"
+                usage 1
+            fi
+            EXCLUDE_FILTERS+=("$2")
+            shift 2
+            ;;
+        --exclude=*)
+            EXCLUDE_VALUE="${1#*=}"
+            if [[ -z "$EXCLUDE_VALUE" ]]; then
+                log_error "--exclude 需要一个非空模式"
+                usage 1
+            fi
+            EXCLUDE_FILTERS+=("$EXCLUDE_VALUE")
             shift
             ;;
         -h|--help)
@@ -140,6 +170,23 @@ if [[ -n "$ONLY_FILTER" ]]; then
     fi
 fi
 
+# 规范化 EXCLUDE_FILTERS: 逐个去掉前缀 ./ 与尾部 /, 绝对路径转仓库相对路径
+if [[ ${#EXCLUDE_FILTERS[@]} -gt 0 ]]; then
+    exclude_idx=0
+    while [[ $exclude_idx -lt ${#EXCLUDE_FILTERS[@]} ]]; do
+        EXCLUDE_FILTERS[$exclude_idx]="${EXCLUDE_FILTERS[$exclude_idx]#./}"
+        EXCLUDE_FILTERS[$exclude_idx]="${EXCLUDE_FILTERS[$exclude_idx]%/}"
+        if [[ "${EXCLUDE_FILTERS[$exclude_idx]}" == "$PROJECT_ROOT"/* ]]; then
+            EXCLUDE_FILTERS[$exclude_idx]="${EXCLUDE_FILTERS[$exclude_idx]#"$PROJECT_ROOT"/}"
+        fi
+        # 仅对不含通配符的模式做存在性校验, 含通配符的模式无法直接 stat
+        if [[ "${EXCLUDE_FILTERS[$exclude_idx]}" != *[\*\?\[]* && ! -e "$PROJECT_ROOT/${EXCLUDE_FILTERS[$exclude_idx]}" ]]; then
+            log_warn "--exclude 指向的路径在仓库中不存在: ${EXCLUDE_FILTERS[$exclude_idx]}"
+        fi
+        exclude_idx=$((exclude_idx+1))
+    done
+fi
+
 # ---------- 工具函数 ----------
 matches_only_filter() {
     local type="$1"   # dotfiles | sdotfiles
@@ -167,6 +214,85 @@ matches_only_filter() {
     return 1
 }
 
+# --exclude 过滤器: 与 matches_only_filter 对称, 语义为"命中即跳过"
+# 匹配对象同样是仓库内相对路径且带类型前缀 (如 dotfiles/.config/gitconfig),
+# 这样 --only / --exclude 作用于同一命名空间, 两者可自由组合
+# 额外支持 * 通配 (bash 模式匹配, 非正则)
+matches_exclude_filter() {
+    local type="$1"   # dotfiles | sdotfiles
+    local rel="$2"    # 仓库内相对路径, 如 .config/nvim/init.lua 或 etc/fonts/local.conf
+    if [[ ${#EXCLUDE_FILTERS[@]} -eq 0 ]]; then
+        return 1
+    fi
+    local repo_path="${type}/${rel}"
+    local filter
+    for filter in "${EXCLUDE_FILTERS[@]}"; do
+        [[ -z "$filter" ]] && continue
+        # 前缀式匹配: 模式 X 同时匹配 X 本身与 X/ 下的所有内容
+        if [[ "$repo_path" == "$filter" || "$repo_path" == "$filter"/* ]]; then
+            return 0
+        fi
+        # 通配匹配: 模式可含 * / ? (右侧不加引号 => 走 bash 模式匹配)
+        if [[ "$repo_path" == $filter ]]; then
+            return 0
+        fi
+        # 通配 + 前缀: 如 dotfiles/.config/fish/conf.d/* 命中该目录下的文件
+        if [[ "$repo_path" == $filter/* ]]; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+# 报告被 --exclude 跳过的文件 (dry-run 输出 [DRY RUN] 前缀, 便于确认排除生效)
+report_excluded() {
+    local type="$1"   # dotfiles | sdotfiles
+    local rel="$2"    # 仓库内相对路径
+    local dest="/$rel"
+    if [[ "$type" == "dotfiles" ]]; then
+        dest="$USER_HOME/$rel"
+    fi
+    if [[ "$DRY_RUN" == true ]]; then
+        log_info "[DRY RUN] Excluded: $dest"
+    else
+        log_info "Excluded (skipped): $dest"
+    fi
+}
+
+# 把字符串里的 sed 正则元字符转义 (用于把 $HOME 原样拼进 sed 表达式)
+sed_escape_re() {
+    local input="$1"
+    local out=""
+    local i ch
+    for (( i = 0; i < ${#input}; i++ )); do
+        ch="${input:i:1}"
+        # / 不转义: sed 分隔符用的是 |
+        case "$ch" in
+            [a-zA-Z0-9_/]) out+="$ch" ;;
+            *)             out+="\\$ch" ;;
+        esac
+    done
+    printf '%s' "$out"
+}
+
+# 归一化家目录写法: $HOME / ${HOME} / __HOME__ / @HOME@ 以及本机真实家目录路径
+# 全部替换为统一标记 __HOME__; 输出到 stdout, 用法: normalize_home_placeholders <file>
+normalize_home_placeholders() {
+    local file="$1"
+    local home_re
+    home_re="$(sed_escape_re "$USER_HOME")"
+    # $HOME 为空时用永不匹配的表达式兜底 (set -u 下不能直接展开未定义变量)
+    if [[ -z "$home_re" ]]; then
+        home_re='$^'
+    fi
+    sed -E \
+        -e 's|\$\{HOME\}|__HOME__|g' \
+        -e 's|\$HOME\>|__HOME__|g' \
+        -e 's|@HOME@|__HOME__|g' \
+        -e "s|${home_re}|__HOME__|g" \
+        -- "$file"
+}
+
 files_are_identical() {
     local src="$1"
     local target="$2"
@@ -185,11 +311,18 @@ files_are_identical() {
         # 链接与普通文件混用视为不同; 链接内容不同亦视为不同
         return 1
     fi
-    # 均为普通文件: 二进制比较 (等价于 checksum 比较,但更快)
+    # 快速路径: 原始字节完全相同即判定相同 (常规情况不走下面的归一化, 保持性能)
     if cmp -s -- "$src" "$target" 2>/dev/null; then
         return 0
     fi
-    return 1
+    # 归一化比较: bookmarks / qt5ct.conf / qt6ct.conf 这类文件在仓库侧用
+    # __HOME__ 或 @HOME@ 占位, 拷贝后 sync_dotfiles() 会 sed 成真实 $HOME,
+    # 于是仓库侧与本机侧字节必然不同 -> 每次 dry-run 都误报"漂移"。
+    # 这里把两侧的家目录写法 (含真实家目录路径) 统一成 __HOME__ 再比一次。
+    # 归一化后仍不等 -> 真实差异, 返回 1。
+    local norm_rc=0
+    cmp -s <(normalize_home_placeholders "$src") <(normalize_home_placeholders "$target") 2>/dev/null || norm_rc=1
+    return $norm_rc
 }
 
 # sdotfiles 目标可能需 sudo 访问;优先普通比较,失败则 sudo 比较
@@ -374,6 +507,11 @@ sync_dotfiles() {
         if ! matches_only_filter "dotfiles" "$rel_path"; then
             continue
         fi
+        # --exclude 命中 -> 跳过 (不备份、不拷贝, 保留本机版本)
+        if matches_exclude_filter "dotfiles" "$rel_path"; then
+            report_excluded "dotfiles" "$rel_path"
+            continue
+        fi
         found=1
         local src="$src_abs"
         local target="$USER_HOME/$rel_path"
@@ -414,6 +552,11 @@ sync_sdotfiles() {
         if ! matches_only_filter "sdotfiles" "$rel_path"; then
             continue
         fi
+        # --exclude 命中 -> 跳过 (不备份、不拷贝, 保留本机版本)
+        if matches_exclude_filter "sdotfiles" "$rel_path"; then
+            report_excluded "sdotfiles" "$rel_path"
+            continue
+        fi
         found=1
         local src="$src_abs"
         local target="/$rel_path"
@@ -441,6 +584,9 @@ main() {
 
     if [[ -n "$ONLY_FILTER" ]]; then
         log_info "Filter --only: $ONLY_FILTER"
+    fi
+    if [[ ${#EXCLUDE_FILTERS[@]} -gt 0 ]]; then
+        log_info "Filter --exclude: ${EXCLUDE_FILTERS[*]}"
     fi
     log_info "Mode: $MODE"
 

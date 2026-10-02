@@ -6,7 +6,7 @@ image/jpeg=org.gnome.gThumb.desktop
 image/png=com.xnview.XnViewMP.desktop
 image/gif=org.gnome.gThumb.desktop
 image/bmp=org.gnome.gThumb.desktop
-image/webp=org.gnome.gThumb.desktop
+image/webp=com.xnview.XnViewMP.desktop
 image/tiff=org.gnome.gThumb.desktop
 image/svg+xml=org.gnome.gThumb.desktop
 image/avif=org.gnome.gThumb.desktop
@@ -145,3 +145,4 @@ inode/directory=nemo.desktop
 [Added Associations]
 application/vnd.comicbook+zip=org.gnome.FileRoller.desktop;
 image/png=com.xnview.XnViewMP.desktop;
+image/webp=com.xnview.XnViewMP.desktop;

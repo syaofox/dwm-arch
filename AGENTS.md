@@ -30,8 +30,27 @@ Arch Linux DWM dotfiles & provisioning repo.
 
 ## 日常同步
 
-- 日常增量同步使用 `tools/update.sh`（`--dry-run` / `--only <repo相对路径>` / `dotfiles|sdotfiles|all`），幂等且 `cp -p` 保权限，支持空格路径；全量仍可用 `setup/deploy-dotfiles.sh`
+- 日常增量同步使用 `tools/update.sh`（`--dry-run` / `--only <repo相对路径>` / `--exclude <glob>` / `dotfiles|sdotfiles|all`），幂等且 `cp -p` 保权限，支持空格路径；全量仍可用 `setup/deploy-dotfiles.sh`
+- `--exclude` 可重复传入，支持 `*` 通配与前缀式匹配（`X` 同时匹配 `X` 与 `X/` 下全部内容），路径写法与 `--only` 一致（带 `dotfiles/` 前缀）。用于跳过不该被仓库覆盖的本机路径
+- 占位符：`bookmarks` 用 `__HOME__`，`qt5ct.conf` / `qt6ct.conf` 用 `@HOME@`，拷贝后由 `update.sh` 的 `sed` 替换为真实 `$HOME`。`files_are_identical()` 比较前会把 `$HOME` / `${HOME}` / `__HOME__` / `@HOME@` 统一归一化，因此这类文件不会每次误报漂移；归一化只在字节级 `cmp` 失败后才走，常规情况不增加开销
+- 本机专属配置一律放仓库管辖不到的路径，例如 `~/.config/fish/conf.d/99-local.fish`（内含 `HF_TOKEN`，切勿入库）。同目录的 `01-env.fish` 由仓库同步管理，会被单向覆盖
 - `tools/backup-secrets.sh` 管理敏感备份（原 `config-manager.sh` 已更名为此，保留兼容 shim）
+
+## 主题相关文件的漂移是预期行为
+
+以下文件由主题系统运行时改写，**仓库副本是历史快照，同步会覆盖当前主题状态**，因此不要"修复"这些漂移：
+
+- `dotfiles/.config/kitty/theme.conf` —— 由 `~/.config/theme-templates/kitty.conf.j2` 经 `generate-app-themes.py` 生成
+- `dotfiles/.config/fcitx5/conf/classicui.conf` 的 `Theme=` / `DarkTheme=` 两行 —— 由 `switch-theme.sh` 按当前主题明暗用 `sed -i` 改写（`dwm` / `dwm-dark`）
+
+要改主题配色应改 `dotfiles/.config/theme-templates/*.j2`，而非这些生成结果。需要批量同步时用 `--exclude` 排除，例如：
+
+```bash
+tools/update.sh --exclude 'dotfiles/.config/kitty/theme.conf' \
+                --exclude dotfiles/.config/fcitx5/conf/classicui.conf dotfiles
+```
+
+其余 `fcitx5/conf/*.conf` 与 `fcitx5/profile` 的漂移来自 fcitx5 首次运行时注释掉默认值，覆盖回模板等同重新初始化，可接受。
 
 ## OpenCode
 
