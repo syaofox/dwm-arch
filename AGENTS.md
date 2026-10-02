@@ -33,6 +33,14 @@ Arch Linux DWM dotfiles & provisioning repo.
 - 日常增量同步使用 `tools/update.sh`（`--dry-run` / `--only <repo相对路径>` / `dotfiles|sdotfiles|all`），幂等且 `cp -p` 保权限，支持空格路径；全量仍可用 `setup/deploy-dotfiles.sh`
 - `tools/backup-secrets.sh` 管理敏感备份（原 `config-manager.sh` 已更名为此，保留兼容 shim）
 
+## OpenCode
+
+- 配置为 V2，仓库仅收录两份文件：`dotfiles/.config/opencode/opencode.json`（server/项目配置，权限用 `permissions` 数组）与 `dotfiles/.config/opencode/cli.json`（TUI 专属，schema 为 `https://opencode.ai/v2/cli.json`）
+- 权限写法为 V2 原生形式：`{action, resource, effect}` 三字段数组。V1 的 `permission` 对象映射、`bash`/`task` 动作名、`**` 通配符在 V2 下无效（通配符只有 `*` 与 `?`，`*` 已含 `/`）
+- 浏览器插件 `@different-ai/opencode-browser` 处于停用状态：其为 V1 插件 API，与 V2 不兼容（V2 要求 default export 为带 `id` + `setup`/`effect` 的对象）。待其发布 V2 兼容版本后，重新在 `opencode.json` 的 `plugins` 中启用
+- 安装方式：`setup/install-apps.sh` 优先官方 installer（`https://opencode.ai/v2/install`，装到 `~/.opencode/bin`），失败时回退 pacman `extra` 仓库的 `opencode` 包
+- TUI 插件/依赖由 opencode 自行安装在 `~/.config/opencode/`（`package.json`、`node_modules` 等），不入库
+
 ## 相关文档
 
 - archlinux: https://wiki.archlinux.org/
